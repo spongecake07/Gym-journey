@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0a" />
-<title>Forge — Gym Journey</title>
+<title>Forge — Gym Journal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
     --text:#f5f5f5;
     --text-dim:#a0a0a0;
     --text-faint:#606060;
-    --accent:#d4a35c;          /* aged gold */
+    --accent:#d4a35c;
     --accent-dim:#8a6a3a;
     --danger:#c94a4a;
     --warn:#d9a441;
@@ -91,6 +91,7 @@
   .btn.danger{color:var(--danger);border-color:#3a1f1f}
   .btn.ghost{background:transparent;border-color:transparent;color:var(--text-dim)}
   .btn.sm{padding:6px 10px;font-size:12px}
+  .btn.lg{padding:14px 18px;font-size:15px}
   .btn.full{width:100%}
   input[type="text"],input[type="number"],input[type="date"],textarea,select{
     width:100%;padding:10px 12px;background:var(--bg-elev-2);border:1px solid var(--border);
@@ -142,7 +143,7 @@
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 
   /* ---------- Nutrition ---------- */
-  .macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+  .macro-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
   .macro{padding:12px 8px;background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center}
   .macro .n{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500}
   .macro .l{font-size:10px;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
@@ -156,6 +157,7 @@
   .meal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:0 2px}
   .meal-head h3{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);font-weight:500}
   .meal-head .total{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint)}
+  .meal-head .add-btn{margin-left:auto}
   .food-item{
     display:flex;justify-content:space-between;align-items:center;gap:10px;
     padding:10px 12px;background:var(--bg-elev);border:1px solid var(--border);
@@ -190,7 +192,7 @@
   .modal .close{position:absolute;top:16px;right:16px;color:var(--text-dim);font-size:24px;line-height:1;padding:4px 10px}
   .form-row{margin-bottom:12px}
   .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .form-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .form-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 
   /* ---------- Progress ---------- */
   .progress-exercise{padding:14px;background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
@@ -202,7 +204,6 @@
   .recipe-card:hover{border-color:var(--accent-dim)}
   .recipe-card h3{font-family:'Cinzel',serif;font-size:15px;font-weight:500;margin-bottom:4px}
   .recipe-card .macros{font-size:11px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
-  .recipe-ingredients{font-size:13px;color:var(--text-dim);line-height:1.7}
 
   /* ---------- AI chat ---------- */
   .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px);max-height:600px}
@@ -249,6 +250,17 @@
   .tab-switch{display:flex;background:var(--bg-elev-2);border-radius:var(--radius-sm);padding:3px;margin-bottom:12px;border:1px solid var(--border)}
   .tab-switch button{flex:1;padding:8px;font-size:12px;color:var(--text-dim);border-radius:4px;letter-spacing:.08em;text-transform:uppercase}
   .tab-switch button.active{background:var(--bg-elev);color:var(--text)}
+
+  .item-card{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+    padding:12px 14px;background:var(--bg-elev);border:1px solid var(--border);
+    border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;
+  }
+  .item-card:hover{border-color:var(--accent-dim)}
+  .item-card .info h4{font-size:14px;margin-bottom:4px;font-family:'Cinzel',serif}
+  .item-card .info .detail{font-size:11px;color:var(--text-faint);font-family:'JetBrains Mono',monospace}
+  .item-card .actions{display:flex;gap:6px}
+  .item-card .actions button{padding:4px 8px;font-size:11px}
 </style>
 </head>
 <body>
@@ -265,12 +277,18 @@
 <!-- ========== WORKOUT VIEW ========== -->
 <section id="view-workout" class="view active">
   <div id="workout-list">
-    <div class="section-title">Weekly Plan</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="section-title" style="margin:0">Your Workouts</div>
+      <button class="btn primary lg" id="add-day-btn">+ New Day</button>
+    </div>
     <!-- days rendered here -->
   </div>
   <div id="workout-detail" style="display:none">
-    <button class="btn ghost sm" id="back-to-days" style="margin-bottom:10px">← Back to plan</button>
+    <button class="btn ghost sm" id="back-to-days" style="margin-bottom:10px">← Back</button>
     <div id="workout-day-content"></div>
+  </div>
+  <div id="my-exercises-btn-wrap" style="display:none;margin-top:20px">
+    <button class="btn sm" id="manage-exercises-btn" style="width:100%">Manage My Exercises</button>
   </div>
 </section>
 
@@ -284,7 +302,7 @@
 <section id="view-nutrition" class="view">
   <div class="tab-switch">
     <button data-ntab="today" class="active">Today</button>
-    <button data-ntab="week">Week Plan</button>
+    <button data-ntab="week">Week</button>
     <button data-ntab="goals">Goals</button>
   </div>
 
@@ -326,23 +344,38 @@
           <input type="number" id="goal-carbs" />
         </div>
       </div>
-      <div class="form-row">
-        <label>Fat (g)</label>
-        <input type="number" id="goal-fat" />
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Fat (g)</label>
+          <input type="number" id="goal-fat" />
+        </div>
+        <div class="form-row">
+          <label>Fiber (g)</label>
+          <input type="number" id="goal-fiber" />
+        </div>
       </div>
       <button class="btn primary full" id="save-goals">Save Targets</button>
       <div class="faint" style="margin-top:10px;line-height:1.5">
-        Tip: Common starting point for muscle building is ~0.8–1g protein per lb bodyweight. A lean cut sits around 10–20% below maintenance calories.
+        Tip: Common starting point for muscle building is ~0.8–1g protein per lb bodyweight. Aim for 25–35g fiber daily for gut health.
       </div>
     </div>
   </div>
 </section>
 
+<!-- ========== MY FOODS VIEW ========== -->
+<section id="view-myfoods" class="view">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="section-title" style="margin:0">My Foods</div>
+    <button class="btn primary lg" id="add-food-btn">+ New Food</button>
+  </div>
+  <div id="myfoods-list"></div>
+</section>
+
 <!-- ========== RECIPES VIEW ========== -->
 <section id="view-recipes" class="view">
-  <div class="row" style="margin-bottom:12px">
-    <div class="section-title" style="margin:0">Saved Recipes</div>
-    <button class="btn primary sm" id="add-recipe-btn">+ New</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="section-title" style="margin:0">My Recipes</div>
+    <button class="btn primary lg" id="add-recipe-btn">+ New Recipe</button>
   </div>
   <div id="recipes-list"></div>
 </section>
@@ -350,7 +383,7 @@
 <!-- ========== AI VIEW ========== -->
 <section id="view-ai" class="view">
   <div class="section-title">Ask Forge AI</div>
-  <div class="faint" style="margin-bottom:10px">Ask about form, exercise swaps, nutrition, or the plan.</div>
+  <div class="faint" style="margin-bottom:10px">Ask about exercise form, swaps, nutrition, or your plan.</div>
   <div class="chat-wrap">
     <div class="chat-messages" id="chat-messages"></div>
     <div class="chat-input">
@@ -376,15 +409,17 @@
     <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 00-5 5c0 2 1 4 2 5l-2 10h10l-2-10c1-1 2-3 2-5a5 5 0 00-5-5z"/></svg>
     Food
   </button>
+  <button data-view="myfoods">
+    <svg viewBox="0 0 24 24"><path d="M9 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9m-5-6v6m-5 0h6M3 9h18"/></svg>
+    My Foods
+  </button>
   <button data-view="recipes">
     <svg viewBox="0 0 24 24"><path d="M4 4h12l4 4v12H4z M4 8h16 M8 12h8 M8 16h6"/></svg>
     Recipes
   </button>
-  <button data-view="ai">
-    <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z M8 12h.01M12 12h.01M16 12h.01"/></svg>
-    Coach
-  </button>
 </nav>
+
+<!-- Missing AI tab, will be added if needed via JS -->
 
 <!-- ========== MODALS ========== -->
 <div class="modal-back" id="modal-back">
@@ -398,154 +433,23 @@
 
 <script>
 /* =====================================================================
-   FORGE — Gym Journal
-   Single-file HTML app. Data persists in localStorage.
+   FORGE — Gym Journal v2
+   Custom workouts, custom foods, fiber tracking
    ===================================================================== */
 
-/* ---------------- WORKOUT PROGRAM ---------------- */
-const WORKOUT_PROGRAM = [
-  {
-    id: 'day1',
-    name: 'Full Body A',
-    focus: 'Squat pattern • Push • Pull',
-    exercises: [
-      { name:'Goblet Squat', sets:4, reps:'8–10', rest:90,
-        tip:'Hold the kettlebell at chest height, elbows tucked. Sit back and down, chest up, knees tracking toes. Drive through midfoot to stand.' },
-      { name:'Kettlebell Push Press', sets:3, reps:'6–8 / side', rest:90,
-        tip:'From racked position, dip slightly at knees, then drive legs straight to assist the overhead press. Lock out with bicep next to ear.' },
-      { name:'Bent-Over Kettlebell Row', sets:4, reps:'8–10 / side', rest:75,
-        tip:'Flat back, hinge at hips. Pull KB to hip, elbow close. Squeeze the lat at the top before lowering with control.' },
-      { name:'Kettlebell Swing', sets:4, reps:'12–15', rest:60,
-        tip:'Hip hinge, not a squat. Drive hips forward explosively. The arms are a rope — the power comes from the glutes.' },
-      { name:'Push-Up', sets:3, reps:'AMRAP', rest:60,
-        tip:'Body in a straight line. Elbows at ~45°, not flared. Lower chest to just above the floor. Elevate hands if needed to keep form.' },
-      { name:'Plank', sets:3, reps:'30–45s', rest:45,
-        tip:'Shoulders stacked over elbows, glutes squeezed, ribs tucked. Don\'t let the hips sag or pike up.' },
-    ],
-  },
-  {
-    id: 'day2',
-    name: 'Full Body B',
-    focus: 'Hinge • Unilateral • Core',
-    exercises: [
-      { name:'Kettlebell Deadlift', sets:4, reps:'8–10', rest:90,
-        tip:'Hinge at hips, shins mostly vertical. Keep KB close to body. Drive through heels, lock out with glutes.' },
-      { name:'Kettlebell Goblet Reverse Lunge', sets:3, reps:'8 / leg', rest:75,
-        tip:'Step back into a lunge, back knee hovers just above floor. Drive through the front heel to return. Keep torso upright.' },
-      { name:'Single-Arm KB Overhead Press', sets:3, reps:'6–8 / side', rest:75,
-        tip:'Brace core hard. Press straight up, no lean. Bicep finishes beside the ear. Lower slowly.' },
-      { name:'Renegade Row', sets:3, reps:'8 / side', rest:75,
-        tip:'Plank position on two KBs. Row one to hip while resisting rotation. Feet wider = easier.' },
-      { name:'Kettlebell Russian Twist', sets:3, reps:'16 total', rest:45,
-        tip:'Lean back ~45°, feet off floor or planted. Rotate from the ribcage, tapping KB each side. Slow and controlled.' },
-      { name:'Dead Bug', sets:3, reps:'10 / side', rest:45,
-        tip:'Low back pressed to floor. Extend opposite arm and leg slowly. Breathe out on extension.' },
-    ],
-  },
-  {
-    id: 'day3',
-    name: 'Full Body C',
-    focus: 'Power • Pull • Legs',
-    exercises: [
-      { name:'Kettlebell Clean', sets:4, reps:'5 / side', rest:90,
-        tip:'Start like a one-arm swing. At the top of the hinge, tame the arc — the KB should land softly in the rack, not bang your forearm.' },
-      { name:'Goblet Squat (tempo)', sets:3, reps:'8 @ 3s down', rest:90,
-        tip:'3 seconds on the way down, pause 1 sec, drive up. Builds control and hypertrophy.' },
-      { name:'Gorilla Row', sets:3, reps:'10 / side', rest:75,
-        tip:'Two KBs on floor, hinged over. Row one up while the other anchors. Pull elbow high and back, squeeze lat.' },
-      { name:'Kettlebell Bulgarian Split Squat', sets:3, reps:'8 / leg', rest:75,
-        tip:'Rear foot on couch/chair. Hold KB at chest. Drop straight down, front shin vertical-ish. Drive through front heel.' },
-      { name:'Kettlebell Halo', sets:3, reps:'5 / direction', rest:45,
-        tip:'Hold KB by the horns, circle it around your head slowly. Keeps the core braced, warms up shoulders.' },
-      { name:'Hollow Hold', sets:3, reps:'20–30s', rest:45,
-        tip:'Low back glued to floor. Arms overhead, legs low. If too hard, bend knees or tuck arms.' },
-    ],
-  },
-];
-
-/* ---------------- FOOD DATABASE (per 100g unless noted) ---------------- */
-const FOOD_DB = [
-  // Proteins
-  { n:'Chicken breast, cooked', u:'100g', kcal:165, p:31, c:0, f:3.6 },
-  { n:'Chicken thigh, cooked', u:'100g', kcal:209, p:26, c:0, f:11 },
-  { n:'Ground beef 85/15, cooked', u:'100g', kcal:250, p:26, c:0, f:17 },
-  { n:'Ground beef 93/7, cooked', u:'100g', kcal:182, p:25, c:0, f:8 },
-  { n:'Salmon, cooked', u:'100g', kcal:208, p:22, c:0, f:13 },
-  { n:'Tuna, canned in water', u:'100g', kcal:116, p:26, c:0, f:1 },
-  { n:'Egg, large whole', u:'1 egg (50g)', kcal:72, p:6, c:0.4, f:5 },
-  { n:'Egg white', u:'1 white (33g)', kcal:17, p:3.6, c:0.2, f:0.1 },
-  { n:'Greek yogurt, 2%', u:'100g', kcal:73, p:10, c:4, f:1.9 },
-  { n:'Greek yogurt, 0%', u:'100g', kcal:59, p:10, c:3.6, f:0.4 },
-  { n:'Cottage cheese, low-fat', u:'100g', kcal:81, p:11, c:3.4, f:2.3 },
-  { n:'Whey protein powder', u:'1 scoop (30g)', kcal:120, p:24, c:3, f:1.5 },
-  { n:'Tofu, firm', u:'100g', kcal:144, p:15, c:3, f:9 },
-  { n:'Tempeh', u:'100g', kcal:192, p:20, c:8, f:11 },
-  { n:'Lentils, cooked', u:'100g', kcal:116, p:9, c:20, f:0.4 },
-  { n:'Black beans, cooked', u:'100g', kcal:132, p:9, c:24, f:0.5 },
-  { n:'Chickpeas, cooked', u:'100g', kcal:164, p:9, c:27, f:2.6 },
-
-  // Carbs
-  { n:'Rice, white, cooked', u:'100g', kcal:130, p:2.7, c:28, f:0.3 },
-  { n:'Rice, brown, cooked', u:'100g', kcal:123, p:2.7, c:26, f:1 },
-  { n:'Oats, dry', u:'100g', kcal:389, p:17, c:66, f:7 },
-  { n:'Oatmeal, cooked', u:'100g', kcal:71, p:2.5, c:12, f:1.5 },
-  { n:'Pasta, cooked', u:'100g', kcal:158, p:5.8, c:31, f:0.9 },
-  { n:'Bread, whole wheat', u:'1 slice (28g)', kcal:69, p:3.6, c:12, f:0.9 },
-  { n:'Bread, white', u:'1 slice (25g)', kcal:66, p:2, c:12, f:0.8 },
-  { n:'Potato, baked', u:'100g', kcal:93, p:2.5, c:21, f:0.1 },
-  { n:'Sweet potato, baked', u:'100g', kcal:90, p:2, c:21, f:0.1 },
-  { n:'Quinoa, cooked', u:'100g', kcal:120, p:4.4, c:21, f:1.9 },
-  { n:'Tortilla, flour', u:'1 medium (32g)', kcal:94, p:2.5, c:15, f:2.5 },
-
-  // Vegetables
-  { n:'Broccoli, cooked', u:'100g', kcal:35, p:2.4, c:7, f:0.4 },
-  { n:'Spinach, raw', u:'100g', kcal:23, p:2.9, c:3.6, f:0.4 },
-  { n:'Bell pepper', u:'100g', kcal:31, p:1, c:6, f:0.3 },
-  { n:'Carrot, raw', u:'100g', kcal:41, p:0.9, c:10, f:0.2 },
-  { n:'Tomato', u:'100g', kcal:18, p:0.9, c:3.9, f:0.2 },
-  { n:'Cucumber', u:'100g', kcal:15, p:0.7, c:3.6, f:0.1 },
-  { n:'Lettuce, mixed', u:'100g', kcal:15, p:1.4, c:2.9, f:0.2 },
-  { n:'Onion', u:'100g', kcal:40, p:1.1, c:9.3, f:0.1 },
-  { n:'Mushrooms', u:'100g', kcal:22, p:3.1, c:3.3, f:0.3 },
-  { n:'Zucchini', u:'100g', kcal:17, p:1.2, c:3.1, f:0.3 },
-
-  // Fruits
-  { n:'Banana', u:'1 medium (118g)', kcal:105, p:1.3, c:27, f:0.4 },
-  { n:'Apple', u:'1 medium (182g)', kcal:95, p:0.5, c:25, f:0.3 },
-  { n:'Blueberries', u:'100g', kcal:57, p:0.7, c:14, f:0.3 },
-  { n:'Strawberries', u:'100g', kcal:32, p:0.7, c:7.7, f:0.3 },
-  { n:'Orange', u:'1 medium (131g)', kcal:62, p:1.2, c:15, f:0.2 },
-  { n:'Avocado', u:'1/2 medium (100g)', kcal:160, p:2, c:9, f:15 },
-
-  // Fats / misc
-  { n:'Olive oil', u:'1 tbsp (14g)', kcal:119, p:0, c:0, f:14 },
-  { n:'Butter', u:'1 tbsp (14g)', kcal:102, p:0.1, c:0, f:12 },
-  { n:'Almonds', u:'28g (1 oz)', kcal:164, p:6, c:6, f:14 },
-  { n:'Peanut butter', u:'1 tbsp (16g)', kcal:94, p:3.5, c:3.5, f:8 },
-  { n:'Cheddar cheese', u:'28g', kcal:113, p:7, c:0.4, f:9 },
-  { n:'Milk, 2%', u:'250ml', kcal:122, p:8, c:12, f:5 },
-  { n:'Milk, skim', u:'250ml', kcal:83, p:8, c:12, f:0.2 },
-  { n:'Almond milk, unsweetened', u:'250ml', kcal:30, p:1, c:1, f:2.5 },
-
-  // Common meals
-  { n:'Coffee, black', u:'1 cup', kcal:2, p:0.3, c:0, f:0 },
-  { n:'Tea, unsweetened', u:'1 cup', kcal:2, p:0, c:0.5, f:0 },
-  { n:'Dark chocolate 70%', u:'20g', kcal:120, p:1.6, c:9, f:8.6 },
-];
-
-const MEALS = ['Breakfast','Lunch','Dinner','Snacks'];
-
 /* ---------------- STORAGE ---------------- */
-const DB_KEY = 'forge_v1';
+const DB_KEY = 'forge_v2';
 const defaultDB = {
-  goals: { kcal:2400, protein:160, carbs:260, fat:75 },
-  foodLog: {},           // { 'YYYY-MM-DD': { Breakfast:[], Lunch:[], ... } }
-  mealPlan: {},          // same structure, for future dates
-  recipes: [],           // [{id,name,servings,ingredients:'', kcal,p,c,f}]
-  workoutLog: {},        // { 'YYYY-MM-DD': { dayId: { exerciseName: [{w,r,done},...] } } }
-  progressionLog: [],    // [{date, exercise, sets:[{w,r}]}]
-  lastDay: 0,            // which day of program we did last (0/1/2)
-  chat: [],              // [{role,content}]
+  goals: { kcal:2400, protein:160, carbs:260, fat:75, fiber:30 },
+  workoutDays: [],         // [{id, name, exercises:[{name,sets,reps,rest,tip}]}]
+  myExercises: [],         // [{id, name, sets, reps, rest, tip}]
+  myFoods: [],             // [{id, name, unit, kcal, p, c, f, fiber}]
+  recipes: [],             // [{id, name, servings, ingredients, instructions, kcal, p, c, f, fiber}]
+  foodLog: {},             // { 'YYYY-MM-DD': { Breakfast:[], Lunch:[], ... } }
+  mealPlan: {},
+  workoutLog: {},          // { 'YYYY-MM-DD': { dayId: { exerciseName: [{w,r,done},...] } } }
+  progressionLog: [],
+  chat: [],
 };
 let DB = loadDB();
 function loadDB(){
@@ -585,6 +489,7 @@ function toast(msg, type=''){
   toast._t = setTimeout(()=>{ t.className = ''; }, 2400);
 }
 function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+function uid(){ return 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2); }
 
 /* ---------------- NAV ---------------- */
 document.querySelectorAll('nav.tabbar button').forEach(b=>{
@@ -592,16 +497,18 @@ document.querySelectorAll('nav.tabbar button').forEach(b=>{
     document.querySelectorAll('nav.tabbar button').forEach(x=>x.classList.remove('active'));
     document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    document.getElementById('view-'+b.dataset.view).classList.add('active');
-    if(b.dataset.view==='workout') renderWorkoutList();
-    if(b.dataset.view==='progress') renderProgress();
-    if(b.dataset.view==='nutrition') renderNutrition();
-    if(b.dataset.view==='recipes') renderRecipes();
-    if(b.dataset.view==='ai') renderChat();
+    const view = b.dataset.view;
+    document.getElementById('view-'+view).classList.add('active');
+    if(view==='workout') renderWorkoutList();
+    if(view==='progress') renderProgress();
+    if(view==='nutrition') renderNutrition();
+    if(view==='myfoods') renderMyFoods();
+    if(view==='recipes') renderRecipes();
+    if(view==='ai') renderChat();
   });
 });
 
-/* ---------------- MODAL ---------------- */
+/* ========== MODAL ========== */
 function openModal(html){
   document.getElementById('modal-content').innerHTML = html;
   document.getElementById('modal-back').classList.add('active');
@@ -616,8 +523,6 @@ document.getElementById('modal-back').addEventListener('click', e=>{
 /* =====================================================================
    WORKOUT VIEW
    ===================================================================== */
-let activeDayIdx = null;
-
 function renderWorkoutList(){
   document.getElementById('workout-detail').style.display = 'none';
   document.getElementById('workout-list').style.display = 'block';
@@ -625,32 +530,36 @@ function renderWorkoutList(){
   const todayLog = DB.workoutLog[today] || {};
   const completedToday = Object.keys(todayLog)[0];
 
-  let html = '<div class="section-title">Weekly Plan</div>';
-  WORKOUT_PROGRAM.forEach((d, i)=>{
-    const done = completedToday === d.id;
-    html += `
-      <div class="day-pill" data-idx="${i}">
-        <div>
-          <div class="day-num">Day ${i+1}${done?' · logged today':''}</div>
-          <div class="day-name">${esc(d.name)}</div>
-          <div class="day-meta">${esc(d.focus)} · ${d.exercises.length} exercises</div>
-        </div>
-        <div class="arrow">›</div>
-      </div>`;
-  });
-  html += `<div class="faint" style="text-align:center;margin-top:20px;line-height:1.6">
-    Train 3 non-consecutive days: e.g. Mon · Wed · Fri.<br/>
-    Tap a day to view exercises, log sets, and start rest timers.
-  </div>`;
-  document.getElementById('workout-list').innerHTML = html;
+  let html = '<div class="section-title" style="margin-top:0">Your Workouts</div>';
+  if(DB.workoutDays.length===0){
+    html += `<div class="empty">
+      <div class="big">⚒</div>
+      <div>No workout days yet.</div>
+      <div class="faint" style="margin-top:6px">Tap + New Day to create your first one.</div>
+    </div>`;
+  } else {
+    DB.workoutDays.forEach((d, i)=>{
+      const done = completedToday === d.id;
+      html += `
+        <div class="day-pill" data-idx="${i}">
+          <div>
+            <div class="day-num">${done?'✓ logged today':d.exercises.length+' exercises'}</div>
+            <div class="day-name">${esc(d.name)}</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>`;
+    });
+  }
+  const firstPart = document.getElementById('workout-list');
+  const oldContent = firstPart.innerHTML;
+  firstPart.innerHTML = oldContent.split('<!-- days rendered here -->')[0] + html + '<!-- days rendered here -->';
   document.querySelectorAll('.day-pill').forEach(p=>{
     p.addEventListener('click', ()=> openWorkoutDay(parseInt(p.dataset.idx)));
   });
 }
 
 function openWorkoutDay(idx){
-  activeDayIdx = idx;
-  const day = WORKOUT_PROGRAM[idx];
+  const day = DB.workoutDays[idx];
   document.getElementById('workout-list').style.display = 'none';
   document.getElementById('workout-detail').style.display = 'block';
 
@@ -659,10 +568,12 @@ function openWorkoutDay(idx){
   const log = DB.workoutLog[today][day.id] = DB.workoutLog[today][day.id] || {};
 
   let html = `
-    <div style="margin-bottom:14px">
-      <div class="day-num" style="font-family:'Cinzel';font-size:11px;letter-spacing:.2em;color:var(--text-faint);text-transform:uppercase">Day ${idx+1}</div>
-      <h2 style="font-size:22px;margin-top:2px">${esc(day.name)}</h2>
-      <div class="faint" style="margin-top:4px">${esc(day.focus)}</div>
+    <div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <h2 style="font-size:22px;margin-bottom:4px">${esc(day.name)}</h2>
+        <div class="faint">${day.exercises.length} exercises</div>
+      </div>
+      <button class="btn sm ghost" id="edit-day-btn" style="color:var(--text-dim)">Edit</button>
     </div>`;
 
   day.exercises.forEach((ex, ei)=>{
@@ -702,14 +613,16 @@ function openWorkoutDay(idx){
   html += `<button class="btn primary full" id="save-workout" style="margin-top:10px">Save session</button>`;
   document.getElementById('workout-day-content').innerHTML = html;
 
-  // event bindings
+  document.getElementById('edit-day-btn').addEventListener('click', ()=>{
+    openEditWorkoutDay(idx);
+  });
+
   document.querySelectorAll('#workout-day-content .exercise').forEach(exEl=>{
     const ei = parseInt(exEl.dataset.ex);
     const ex = day.exercises[ei];
     exEl.querySelector('.exercise-head').addEventListener('click', ()=>{
       exEl.querySelector('.exercise-body').classList.toggle('open');
     });
-    // open first by default
     if(ei===0) exEl.querySelector('.exercise-body').classList.add('open');
 
     exEl.querySelectorAll('.set-grid').forEach(sg=>{
@@ -725,10 +638,7 @@ function openWorkoutDay(idx){
         DB.workoutLog[today][day.id][ex.name][si].done = !checked;
         saveDB();
         e.currentTarget.classList.toggle('done');
-        // auto-start rest timer on check
-        if(!checked){
-          startTimer(exEl, ex.rest);
-        }
+        if(!checked) startTimer(exEl, ex.rest);
       });
     });
 
@@ -739,6 +649,129 @@ function openWorkoutDay(idx){
 
   document.getElementById('save-workout').addEventListener('click', ()=>{
     saveWorkoutSession(idx);
+  });
+}
+
+function openEditWorkoutDay(idx){
+  const day = DB.workoutDays[idx];
+  let html = `<h2>Edit ${esc(day.name)}</h2>
+    <div class="form-row"><label>Day Name</label><input type="text" id="ed-name" value="${esc(day.name)}"/></div>
+    <div class="section-title">Exercises</div>
+    <div id="ed-exercises-list"></div>
+    <button class="btn sm full" id="ed-add-ex" style="margin-bottom:10px">+ Add Exercise</button>
+    <button class="btn primary full" id="ed-save" style="margin-bottom:10px">Save Changes</button>
+    <button class="btn danger full" id="ed-delete">Delete This Day</button>
+  `;
+  openModal(html);
+
+  const renderExList = ()=>{
+    const list = document.getElementById('ed-exercises-list');
+    list.innerHTML = day.exercises.map((ex,i)=>`
+      <div class="item-card">
+        <div class="info">
+          <h4>${esc(ex.name)}</h4>
+          <div class="detail">${ex.sets} × ${ex.reps} · rest ${ex.rest}s</div>
+        </div>
+        <div class="actions">
+          <button class="btn sm ghost" data-remove-ex="${i}">Remove</button>
+        </div>
+      </div>`).join('');
+    list.querySelectorAll('[data-remove-ex]').forEach((b,i)=>{
+      b.addEventListener('click', e=>{
+        e.stopPropagation();
+        day.exercises.splice(parseInt(b.dataset.removeEx), 1);
+        renderExList();
+      });
+    });
+  };
+  renderExList();
+
+  document.getElementById('ed-add-ex').addEventListener('click', ()=>{
+    const html2 = `<h2>Add Exercise to ${esc(day.name)}</h2>
+      <div class="tab-switch">
+        <button class="active" data-exadd-tab="fromlib">From Library</button>
+        <button data-exadd-tab="new">New</button>
+      </div>
+      <div id="exadd-fromlib">
+        <div id="exlib-list"></div>
+      </div>
+      <div id="exadd-new" style="display:none">
+        <div class="form-row"><label>Name</label><input type="text" id="exn-name"/></div>
+        <div class="form-grid-2">
+          <div class="form-row"><label>Sets</label><input type="number" id="exn-sets" value="3"/></div>
+          <div class="form-row"><label>Reps</label><input type="text" id="exn-reps" value="8-10"/></div>
+        </div>
+        <div class="form-row"><label>Rest (seconds)</label><input type="number" id="exn-rest" value="90"/></div>
+        <div class="form-row"><label>Form Tip</label><textarea id="exn-tip" rows="2" placeholder="Brief form cue..."></textarea></div>
+        <button class="btn primary full" id="exn-save">Add Exercise</button>
+      </div>
+    `;
+    openModal(html2);
+
+    document.querySelectorAll('[data-exadd-tab]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        document.querySelectorAll('[data-exadd-tab]').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        ['fromlib','new'].forEach(t=>{
+          document.getElementById('exadd-'+t).style.display = (t===b.dataset.exaddTab)?'block':'none';
+        });
+      });
+    });
+
+    const libList = document.getElementById('exlib-list');
+    if(DB.myExercises.length===0){
+      libList.innerHTML = '<div class="food-empty">No exercises in library yet</div>';
+    } else {
+      libList.innerHTML = DB.myExercises.map((mex, i)=>`
+        <div class="item-card">
+          <div class="info">
+            <h4>${esc(mex.name)}</h4>
+            <div class="detail">${mex.sets} × ${mex.reps} · rest ${mex.rest}s</div>
+          </div>
+          <button class="btn sm primary" data-pick-ex="${i}">Add</button>
+        </div>`).join('');
+      libList.querySelectorAll('[data-pick-ex]').forEach((b,i)=>{
+        b.addEventListener('click', e=>{
+          e.stopPropagation();
+          const mex = DB.myExercises[parseInt(b.dataset.pickEx)];
+          day.exercises.push({...mex});
+          renderExList();
+          closeModal();
+        });
+      });
+    }
+
+    document.getElementById('exn-save').addEventListener('click', ()=>{
+      const newEx = {
+        name: document.getElementById('exn-name').value.trim(),
+        sets: parseInt(document.getElementById('exn-sets').value)||3,
+        reps: document.getElementById('exn-reps').value || '8-10',
+        rest: parseInt(document.getElementById('exn-rest').value)||90,
+        tip: document.getElementById('exn-tip').value,
+      };
+      if(!newEx.name){ toast('Name required','danger'); return; }
+      day.exercises.push(newEx);
+      renderExList();
+      closeModal();
+    });
+  });
+
+  document.getElementById('ed-save').addEventListener('click', ()=>{
+    day.name = document.getElementById('ed-name').value.trim();
+    if(!day.name) day.name = 'Untitled';
+    saveDB();
+    toast('Day updated');
+    closeModal();
+    renderWorkoutList();
+  });
+
+  document.getElementById('ed-delete').addEventListener('click', ()=>{
+    if(confirm('Delete this workout day?')){
+      DB.workoutDays.splice(idx, 1);
+      saveDB();
+      closeModal();
+      renderWorkoutList();
+    }
   });
 }
 
@@ -755,7 +788,6 @@ function startTimer(exEl, seconds){
       clearInterval(exEl._timerInterval);
       display.classList.remove('active');
       display.textContent = 'DONE';
-      // haptic + sound if possible
       if(navigator.vibrate) navigator.vibrate([150,80,150]);
       try{
         const audio = new AudioContext();
@@ -771,7 +803,7 @@ function startTimer(exEl, seconds){
 function formatTime(s){ const m = Math.floor(s/60); const r = s%60; return `${m}:${String(r).padStart(2,'0')}`; }
 
 function saveWorkoutSession(idx){
-  const day = WORKOUT_PROGRAM[idx];
+  const day = DB.workoutDays[idx];
   const today = todayISO();
   const log = DB.workoutLog[today][day.id];
   const entry = { date: today, dayName: day.name, exercises: [] };
@@ -779,7 +811,6 @@ function saveWorkoutSession(idx){
     const sets = (log[ex.name]||[]).filter(s=>s.w||s.r);
     if(sets.length) entry.exercises.push({ name: ex.name, sets: sets.map(s=>({w:s.w, r:s.r})) });
   }
-  // remove any prior entry for same date/day
   DB.progressionLog = DB.progressionLog.filter(e=>!(e.date===today && e.dayName===day.name));
   DB.progressionLog.push(entry);
   saveDB();
@@ -789,6 +820,22 @@ function saveWorkoutSession(idx){
 }
 
 document.getElementById('back-to-days').addEventListener('click', renderWorkoutList);
+
+document.getElementById('add-day-btn').addEventListener('click', ()=>{
+  const html = `<h2>New Workout Day</h2>
+    <div class="form-row"><label>Day Name (e.g. "Push", "Leg Day")</label><input type="text" id="newday-name" placeholder="Chest & shoulders" autofocus/></div>
+    <button class="btn primary full" id="newday-create">Create Day</button>
+  `;
+  openModal(html);
+  document.getElementById('newday-create').addEventListener('click', ()=>{
+    const name = document.getElementById('newday-name').value.trim();
+    if(!name){ toast('Name required','danger'); return; }
+    DB.workoutDays.push({ id: uid(), name, exercises: [] });
+    saveDB();
+    closeModal();
+    renderWorkoutList();
+  });
+});
 
 /* =====================================================================
    PROGRESS VIEW
@@ -806,7 +853,7 @@ function renderProgress(){
   const target = document.getElementById('progress-list');
   if(names.length === 0){
     target.innerHTML = `<div class="empty">
-      <div class="big">⚒</div>
+      <div class="big">📈</div>
       <div>No sessions logged yet.</div>
       <div class="faint" style="margin-top:6px">Complete a workout to start tracking.</div>
     </div>`;
@@ -830,6 +877,8 @@ function renderProgress(){
 /* =====================================================================
    NUTRITION VIEW
    ===================================================================== */
+const MEALS = ['Breakfast','Lunch','Dinner','Snacks'];
+
 document.querySelectorAll('[data-ntab]').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('[data-ntab]').forEach(x=>x.classList.remove('active'));
@@ -848,18 +897,15 @@ function renderNutrition(){
   const today = todayISO();
   document.getElementById('date-sub').textContent = currentDate === today ? 'TODAY' : '';
 
-  // Get entries for current date (actual log or plan)
   const day = DB.foodLog[currentDate] || {};
-  const plan = DB.mealPlan[currentDate] || {};
-
-  // Totals (combine log; plan doesn't count toward today's totals automatically, it's a plan)
-  const totals = { kcal:0, p:0, c:0, f:0 };
+  const totals = { kcal:0, p:0, c:0, f:0, fiber:0 };
   MEALS.forEach(m=>{
     (day[m]||[]).forEach(item=>{
       totals.kcal += item.kcal||0;
       totals.p    += item.p||0;
       totals.c    += item.c||0;
       totals.f    += item.f||0;
+      totals.fiber += item.fiber||0;
     });
   });
 
@@ -869,6 +915,7 @@ function renderNutrition(){
     { label:'protein', val:Math.round(totals.p),    goal:g.protein },
     { label:'carbs',   val:Math.round(totals.c),    goal:g.carbs   },
     { label:'fat',     val:Math.round(totals.f),    goal:g.fat     },
+    { label:'fiber',   val:Math.round(totals.fiber),goal:g.fiber   },
   ];
   document.getElementById('macro-grid').innerHTML = macros.map(m=>{
     const pct = m.goal ? (m.val/m.goal)*100 : 0;
@@ -880,13 +927,6 @@ function renderNutrition(){
     </div>`;
   }).join('');
 
-  // Warning toast if over
-  if(totals.kcal > g.kcal * 1.05 && !renderNutrition._warnedDate){
-    toast('Over calorie target', 'warn');
-    renderNutrition._warnedDate = currentDate;
-  }
-
-  // Meals sections
   let html = '';
   MEALS.forEach(m=>{
     const items = day[m] || [];
@@ -895,9 +935,8 @@ function renderNutrition(){
       <div class="meal-section">
         <div class="meal-head">
           <h3>${m}</h3>
-          <div class="total">${Math.round(mealTot)} kcal
-            <button class="btn ghost sm" data-add-meal="${m}" style="margin-left:6px;color:var(--accent)">+ Add</button>
-          </div>
+          <button class="btn primary lg add-btn" data-add-meal="${m}">+ Add</button>
+          <div class="total">${Math.round(mealTot)} kcal</div>
         </div>
         ${items.length===0
           ? `<div class="food-empty">Nothing logged</div>`
@@ -905,7 +944,7 @@ function renderNutrition(){
             <div class="food-item" data-meal="${m}" data-item="${i}">
               <div>
                 <div class="name">${esc(it.name)}</div>
-                <div class="sub">${esc(it.unit)}${it.qty!==1 ? ' × '+it.qty : ''} · P ${Math.round(it.p)} C ${Math.round(it.c)} F ${Math.round(it.f)}</div>
+                <div class="sub">${esc(it.unit)}${it.qty!==1 ? ' × '+it.qty : ''} · P ${Math.round(it.p)} C ${Math.round(it.c)} F ${Math.round(it.f)} Fiber ${Math.round(it.fiber||0)}</div>
               </div>
               <div class="kcal">${Math.round(it.kcal)}</div>
             </div>`).join('')
@@ -946,23 +985,25 @@ function openAddFood(meal){
   const html = `
     <h2>Add to ${meal}</h2>
     <div class="tab-switch">
-      <button class="active" data-food-tab="search">Search</button>
+      <button class="active" data-food-tab="myfoods">My Foods</button>
       <button data-food-tab="custom">Custom</button>
       <button data-food-tab="recipe">Recipe</button>
     </div>
-    <div id="food-tab-search">
-      <input type="text" id="food-search-input" placeholder="Search foods..." autofocus/>
-      <div class="search-list" id="food-search-list"></div>
+    <div id="food-tab-myfoods">
+      <div id="myfoods-picker-list"></div>
     </div>
     <div id="food-tab-custom" style="display:none">
       <div class="form-row"><label>Name</label><input type="text" id="cf-name"/></div>
-      <div class="form-row"><label>Serving (e.g. "1 bowl")</label><input type="text" id="cf-unit" value="1 serving"/></div>
-      <div class="form-grid-4">
-        <div class="form-row"><label>kcal</label><input type="number" id="cf-kcal"/></div>
-        <div class="form-row"><label>P (g)</label><input type="number" id="cf-p"/></div>
-        <div class="form-row"><label>C (g)</label><input type="number" id="cf-c"/></div>
-        <div class="form-row"><label>F (g)</label><input type="number" id="cf-f"/></div>
+      <div class="form-row"><label>Serving (e.g. "1 slice")</label><input type="text" id="cf-unit" value="1 serving"/></div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>Calories</label><input type="number" id="cf-kcal"/></div>
+        <div class="form-row"><label>Protein (g)</label><input type="number" id="cf-p"/></div>
       </div>
+      <div class="form-grid-2">
+        <div class="form-row"><label>Carbs (g)</label><input type="number" id="cf-c"/></div>
+        <div class="form-row"><label>Fat (g)</label><input type="number" id="cf-f"/></div>
+      </div>
+      <div class="form-row"><label>Fiber (g)</label><input type="number" id="cf-fiber"/></div>
       <button class="btn primary full" id="cf-save">Add</button>
     </div>
     <div id="food-tab-recipe" style="display:none">
@@ -975,31 +1016,31 @@ function openAddFood(meal){
     b.addEventListener('click', ()=>{
       document.querySelectorAll('[data-food-tab]').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
-      ['search','custom','recipe'].forEach(t=>{
+      ['myfoods','custom','recipe'].forEach(t=>{
         document.getElementById('food-tab-'+t).style.display = (t===b.dataset.foodTab)?'block':'none';
       });
     });
   });
 
-  const input = document.getElementById('food-search-input');
-  const list = document.getElementById('food-search-list');
-  function runSearch(){
-    const q = input.value.trim().toLowerCase();
-    const results = q.length < 1
-      ? FOOD_DB.slice(0, 20)
-      : FOOD_DB.filter(f=>f.n.toLowerCase().includes(q)).slice(0, 30);
-    list.innerHTML = results.map((f, i)=>`
-      <div class="search-item" data-f="${i}">
-        <div>${esc(f.n)}</div>
-        <div class="macros">${f.u} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f}</div>
-      </div>
-    `).join('') || '<div class="food-empty">No matches</div>';
-    list.querySelectorAll('.search-item').forEach((el, i)=>{
-      el.addEventListener('click', ()=> pickFoodQty(results[i], meal));
+  const mfList = document.getElementById('myfoods-picker-list');
+  if(DB.myFoods.length===0){
+    mfList.innerHTML = '<div class="food-empty">No foods saved yet. Create one in My Foods tab.</div>';
+  } else {
+    mfList.innerHTML = DB.myFoods.map((f,i)=>`
+      <div class="item-card">
+        <div class="info">
+          <h4>${esc(f.name)}</h4>
+          <div class="detail">${esc(f.unit)} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f} Fiber${f.fiber||0}</div>
+        </div>
+        <button class="btn sm primary" data-pick-food="${i}">Add</button>
+      </div>`).join('');
+    mfList.querySelectorAll('[data-pick-food]').forEach((b,i)=>{
+      b.addEventListener('click', e=>{
+        e.stopPropagation();
+        pickFoodQty(DB.myFoods[i], meal);
+      });
     });
   }
-  input.addEventListener('input', runSearch);
-  runSearch();
 
   document.getElementById('cf-save').addEventListener('click', ()=>{
     const item = {
@@ -1010,24 +1051,29 @@ function openAddFood(meal){
       p: parseFloat(document.getElementById('cf-p').value)||0,
       c: parseFloat(document.getElementById('cf-c').value)||0,
       f: parseFloat(document.getElementById('cf-f').value)||0,
+      fiber: parseFloat(document.getElementById('cf-fiber').value)||0,
     };
     addFoodItem(meal, item);
     closeModal();
   });
 
-  // recipe picker
   const rList = document.getElementById('recipe-picker-list');
   if(DB.recipes.length===0){
     rList.innerHTML = '<div class="food-empty">No saved recipes yet</div>';
   } else {
     rList.innerHTML = DB.recipes.map((r,i)=>`
-      <div class="search-item" data-r="${i}">
-        <div>${esc(r.name)}</div>
-        <div class="macros">per serving: ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)}</div>
-      </div>
-    `).join('');
-    rList.querySelectorAll('.search-item').forEach((el,i)=>{
-      el.addEventListener('click', ()=> pickRecipeQty(DB.recipes[i], meal));
+      <div class="item-card">
+        <div class="info">
+          <h4>${esc(r.name)}</h4>
+          <div class="detail">per serving: ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)} Fiber${Math.round(r.fiber||0)}</div>
+        </div>
+        <button class="btn sm primary" data-pick-recipe="${i}">Add</button>
+      </div>`).join('');
+    rList.querySelectorAll('[data-pick-recipe]').forEach((b,i)=>{
+      b.addEventListener('click', e=>{
+        e.stopPropagation();
+        pickRecipeQty(DB.recipes[i], meal);
+      });
     });
   }
 }
@@ -1035,10 +1081,10 @@ function openAddFood(meal){
 function pickFoodQty(food, meal){
   const defaultQty = 1;
   const html = `
-    <h2>${esc(food.n)}</h2>
-    <div class="faint" style="margin-bottom:12px">${food.u} — ${food.kcal} kcal · P${food.p} C${food.c} F${food.f}</div>
+    <h2>${esc(food.name)}</h2>
+    <div class="faint" style="margin-bottom:12px">${food.unit} — ${food.kcal} kcal · P${food.p} C${food.c} F${food.f} Fiber${food.fiber||0}</div>
     <div class="form-row">
-      <label>Quantity (× ${esc(food.u)})</label>
+      <label>Quantity (× ${esc(food.unit)})</label>
       <input type="number" id="qty-input" value="${defaultQty}" step="0.25" min="0.25" autofocus/>
     </div>
     <div class="macro-grid">
@@ -1046,6 +1092,7 @@ function pickFoodQty(food, meal){
       <div class="macro"><div class="n" id="pv-p">${food.p}</div><div class="l">prot</div></div>
       <div class="macro"><div class="n" id="pv-c">${food.c}</div><div class="l">carb</div></div>
       <div class="macro"><div class="n" id="pv-f">${food.f}</div><div class="l">fat</div></div>
+      <div class="macro"><div class="n" id="pv-fib">${food.fiber||0}</div><div class="l">fiber</div></div>
     </div>
     <button class="btn primary full" id="qty-save">Add to ${meal}</button>
   `;
@@ -1057,13 +1104,14 @@ function pickFoodQty(food, meal){
     document.getElementById('pv-p').textContent = Math.round(food.p * q * 10)/10;
     document.getElementById('pv-c').textContent = Math.round(food.c * q * 10)/10;
     document.getElementById('pv-f').textContent = Math.round(food.f * q * 10)/10;
+    document.getElementById('pv-fib').textContent = Math.round((food.fiber||0) * q * 10)/10;
   };
   qty.addEventListener('input', update);
   document.getElementById('qty-save').addEventListener('click', ()=>{
     const q = parseFloat(qty.value)||1;
     addFoodItem(meal, {
-      name: food.n, unit: food.u, qty: q,
-      kcal: food.kcal*q, p: food.p*q, c: food.c*q, f: food.f*q,
+      name: food.name, unit: food.unit, qty: q,
+      kcal: food.kcal*q, p: food.p*q, c: food.c*q, f: food.f*q, fiber: (food.fiber||0)*q,
     });
     closeModal();
   });
@@ -1090,6 +1138,7 @@ function pickRecipeQty(recipe, meal){
       p: recipe.p * q,
       c: recipe.c * q,
       f: recipe.f * q,
+      fiber: (recipe.fiber||0) * q,
     });
     closeModal();
   });
@@ -1102,7 +1151,6 @@ function addFoodItem(meal, item){
   saveDB();
   renderNutrition();
 
-  // Warn if over
   const totals = MEALS.reduce((a,m)=>{
     (DB.foodLog[currentDate][m]||[]).forEach(i=>{
       a.kcal += i.kcal; a.p += i.p;
@@ -1114,11 +1162,9 @@ function addFoodItem(meal, item){
   }
 }
 
-/* ---- Week plan ---- */
 function renderWeek(){
-  // start of this week (Monday)
   const today = new Date();
-  const dow = (today.getDay()+6)%7; // Monday=0
+  const dow = (today.getDay()+6)%7;
   const start = new Date(today); start.setDate(today.getDate()-dow);
   const days = Array.from({length:7}, (_,i)=>{
     const d = new Date(start); d.setDate(start.getDate()+i);
@@ -1147,7 +1193,6 @@ function renderWeek(){
     });
   });
 
-  // summary
   let totals = { kcal:0, p:0, c:0, f:0, loggedDays:0 };
   days.forEach(iso=>{
     const day = DB.foodLog[iso]; if(!day) return;
@@ -1166,16 +1211,15 @@ function renderWeek(){
       <div class="row"><span class="muted">Avg daily calories</span><span>${avgK} kcal</span></div>
       <div class="row" style="margin-top:6px"><span class="muted">Target</span><span>${DB.goals.kcal} kcal</span></div>
     </div>
-    <div class="faint" style="text-align:center;line-height:1.6">Tap a day above to view or edit its log.</div>
   `;
 }
 
-/* ---- Goals ---- */
 function loadGoalsInputs(){
   document.getElementById('goal-kcal').value = DB.goals.kcal;
   document.getElementById('goal-protein').value = DB.goals.protein;
   document.getElementById('goal-carbs').value = DB.goals.carbs;
   document.getElementById('goal-fat').value = DB.goals.fat;
+  document.getElementById('goal-fiber').value = DB.goals.fiber;
 }
 document.getElementById('save-goals').addEventListener('click', ()=>{
   DB.goals = {
@@ -1183,10 +1227,96 @@ document.getElementById('save-goals').addEventListener('click', ()=>{
     protein: parseInt(document.getElementById('goal-protein').value)||160,
     carbs: parseInt(document.getElementById('goal-carbs').value)||260,
     fat: parseInt(document.getElementById('goal-fat').value)||75,
+    fiber: parseInt(document.getElementById('goal-fiber').value)||30,
   };
   saveDB();
   toast('Targets saved');
 });
+
+/* =====================================================================
+   MY FOODS VIEW
+   ===================================================================== */
+function renderMyFoods(){
+  const target = document.getElementById('myfoods-list');
+  if(DB.myFoods.length===0){
+    target.innerHTML = `<div class="empty">
+      <div class="big">🥗</div>
+      <div>No foods saved yet.</div>
+      <div class="faint" style="margin-top:6px">Tap + New Food to add your first one.</div>
+    </div>`;
+  } else {
+    target.innerHTML = DB.myFoods.map((f, i)=>`
+      <div class="item-card" data-f="${i}">
+        <div class="info">
+          <h4>${esc(f.name)}</h4>
+          <div class="detail">${esc(f.unit)} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f} Fiber${f.fiber||0}</div>
+        </div>
+        <button class="btn sm ghost" data-edit-food="${i}">Edit</button>
+      </div>
+    `).join('');
+    document.querySelectorAll('[data-edit-food]').forEach((b,i)=>{
+      b.addEventListener('click', e=>{
+        e.stopPropagation();
+        editMyFood(parseInt(b.dataset.editFood));
+      });
+    });
+  }
+}
+
+document.getElementById('add-food-btn').addEventListener('click', ()=> openFoodForm(null));
+
+function openFoodForm(editIdx){
+  const f = editIdx===null ? { name:'', unit:'1 unit', kcal:0, p:0, c:0, f:0, fiber:0 } : DB.myFoods[editIdx];
+  const html = `
+    <h2>${editIdx===null?'New Food':'Edit Food'}</h2>
+    <div class="form-row"><label>Name</label><input type="text" id="f-name" value="${esc(f.name)}"/></div>
+    <div class="form-row"><label>Serving Unit (e.g. "1 slice", "100g")</label><input type="text" id="f-unit" value="${esc(f.unit)}"/></div>
+    <div class="section-title">Macros per serving</div>
+    <div class="form-grid-5">
+      <div class="form-row"><label>Kcal</label><input type="number" id="f-kcal" value="${f.kcal}"/></div>
+      <div class="form-row"><label>Protein</label><input type="number" id="f-p" value="${f.p}"/></div>
+      <div class="form-row"><label>Carbs</label><input type="number" id="f-c" value="${f.c}"/></div>
+      <div class="form-row"><label>Fat</label><input type="number" id="f-f" value="${f.f}"/></div>
+      <div class="form-row"><label>Fiber</label><input type="number" id="f-fiber" value="${f.fiber||0}"/></div>
+    </div>
+    <button class="btn primary full" id="f-save" style="margin-top:6px">${editIdx===null?'Create Food':'Save Changes'}</button>
+    ${editIdx!==null?`<button class="btn danger full" id="f-delete" style="margin-top:6px">Delete</button>`:''}
+  `;
+  openModal(html);
+  document.getElementById('f-save').addEventListener('click', ()=>{
+    const obj = {
+      id: f.id || uid(),
+      name: document.getElementById('f-name').value.trim(),
+      unit: document.getElementById('f-unit').value.trim(),
+      kcal: parseFloat(document.getElementById('f-kcal').value)||0,
+      p: parseFloat(document.getElementById('f-p').value)||0,
+      c: parseFloat(document.getElementById('f-c').value)||0,
+      f: parseFloat(document.getElementById('f-f').value)||0,
+      fiber: parseFloat(document.getElementById('f-fiber').value)||0,
+    };
+    if(!obj.name){ toast('Name required','danger'); return; }
+    if(editIdx===null) DB.myFoods.push(obj);
+    else DB.myFoods[editIdx] = obj;
+    saveDB();
+    closeModal();
+    renderMyFoods();
+    toast('Food saved');
+  });
+  if(editIdx!==null){
+    document.getElementById('f-delete').addEventListener('click', ()=>{
+      if(confirm('Delete this food?')){
+        DB.myFoods.splice(editIdx, 1);
+        saveDB();
+        closeModal();
+        renderMyFoods();
+      }
+    });
+  }
+}
+
+function editMyFood(idx){
+  openFoodForm(idx);
+}
 
 /* =====================================================================
    RECIPES VIEW
@@ -1197,31 +1327,32 @@ function renderRecipes(){
     target.innerHTML = `<div class="empty">
       <div class="big">📖</div>
       <div>No recipes saved yet.</div>
-      <div class="faint" style="margin-top:6px">Tap + New to add your first one.</div>
+      <div class="faint" style="margin-top:6px">Tap + New Recipe to add your first one.</div>
     </div>`;
-    return;
+  } else {
+    target.innerHTML = DB.recipes.map((r, i)=>`
+      <div class="recipe-card" data-i="${i}">
+        <h3>${esc(r.name)}</h3>
+        <div class="macros">${r.servings} servings · per serving: ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)} Fiber${Math.round(r.fiber||0)}</div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.recipe-card').forEach((el,i)=>{
+      el.addEventListener('click', ()=> openRecipe(i));
+    });
   }
-  target.innerHTML = DB.recipes.map((r, i)=>`
-    <div class="recipe-card" data-i="${i}">
-      <h3>${esc(r.name)}</h3>
-      <div class="macros">${r.servings} servings · per serving: ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)}</div>
-    </div>
-  `).join('');
-  document.querySelectorAll('.recipe-card').forEach((el,i)=>{
-    el.addEventListener('click', ()=> openRecipe(i));
-  });
 }
+
 document.getElementById('add-recipe-btn').addEventListener('click', ()=> openRecipeForm(null));
 
 function openRecipe(i){
   const r = DB.recipes[i];
   const html = `
     <h2>${esc(r.name)}</h2>
-    <div class="faint" style="margin-bottom:14px">${r.servings} servings · per serving: ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)}</div>
+    <div class="faint" style="margin-bottom:14px">${r.servings} servings · per serving: ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)} Fiber${Math.round(r.fiber||0)}</div>
     <div class="section-title" style="margin-top:0">Ingredients</div>
-    <div class="recipe-ingredients">${esc(r.ingredients||'—').replace(/\n/g,'<br/>')}</div>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.6">${esc(r.ingredients||'—').replace(/\n/g,'<br/>')}</div>
     <div class="section-title">Instructions</div>
-    <div class="recipe-ingredients">${esc(r.instructions||'—').replace(/\n/g,'<br/>')}</div>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.6">${esc(r.instructions||'—').replace(/\n/g,'<br/>')}</div>
     <div style="display:flex;gap:8px;margin-top:16px">
       <button class="btn" id="edit-recipe" style="flex:1">Edit</button>
       <button class="btn danger" id="delete-recipe" style="flex:1">Delete</button>
@@ -1237,7 +1368,7 @@ function openRecipe(i){
 }
 
 function openRecipeForm(editIdx){
-  const r = editIdx===null ? { name:'', servings:1, ingredients:'', instructions:'', kcal:0, p:0, c:0, f:0 } : DB.recipes[editIdx];
+  const r = editIdx===null ? { name:'', servings:1, ingredients:'', instructions:'', kcal:0, p:0, c:0, f:0, fiber:0 } : DB.recipes[editIdx];
   const html = `
     <h2>${editIdx===null?'New Recipe':'Edit Recipe'}</h2>
     <div class="form-row"><label>Name</label><input type="text" id="r-name" value="${esc(r.name)}"/></div>
@@ -1245,18 +1376,19 @@ function openRecipeForm(editIdx){
     <div class="form-row"><label>Ingredients (one per line)</label><textarea id="r-ing" rows="4">${esc(r.ingredients)}</textarea></div>
     <div class="form-row"><label>Instructions</label><textarea id="r-inst" rows="4">${esc(r.instructions)}</textarea></div>
     <div class="section-title" style="margin-top:10px">Macros per serving</div>
-    <div class="form-grid-4">
-      <div class="form-row"><label>kcal</label><input type="number" id="r-kcal" value="${r.kcal}"/></div>
-      <div class="form-row"><label>P (g)</label><input type="number" id="r-p" value="${r.p}"/></div>
-      <div class="form-row"><label>C (g)</label><input type="number" id="r-c" value="${r.c}"/></div>
-      <div class="form-row"><label>F (g)</label><input type="number" id="r-f" value="${r.f}"/></div>
+    <div class="form-grid-5">
+      <div class="form-row"><label>Kcal</label><input type="number" id="r-kcal" value="${r.kcal}"/></div>
+      <div class="form-row"><label>Protein</label><input type="number" id="r-p" value="${r.p}"/></div>
+      <div class="form-row"><label>Carbs</label><input type="number" id="r-c" value="${r.c}"/></div>
+      <div class="form-row"><label>Fat</label><input type="number" id="r-f" value="${r.f}"/></div>
+      <div class="form-row"><label>Fiber</label><input type="number" id="r-fiber" value="${r.fiber||0}"/></div>
     </div>
     <button class="btn primary full" id="r-save" style="margin-top:6px">${editIdx===null?'Create Recipe':'Save Changes'}</button>
   `;
   openModal(html);
   document.getElementById('r-save').addEventListener('click', ()=>{
     const obj = {
-      id: r.id || ('r_'+Date.now()),
+      id: r.id || uid(),
       name: document.getElementById('r-name').value.trim(),
       servings: parseFloat(document.getElementById('r-serv').value)||1,
       ingredients: document.getElementById('r-ing').value,
@@ -1265,6 +1397,7 @@ function openRecipeForm(editIdx){
       p: parseFloat(document.getElementById('r-p').value)||0,
       c: parseFloat(document.getElementById('r-c').value)||0,
       f: parseFloat(document.getElementById('r-f').value)||0,
+      fiber: parseFloat(document.getElementById('r-fiber').value)||0,
     };
     if(!obj.name){ toast('Name required', 'danger'); return; }
     if(editIdx===null) DB.recipes.push(obj);
@@ -1313,8 +1446,7 @@ async function sendChat(){
   m.appendChild(loading);
   m.scrollTop = m.scrollHeight;
 
-  // Build context
-  const sys = `You are a knowledgeable gym and nutrition coach helping a user who is returning to the gym after 5-6 years. They do 3-day full-body kettlebell + bodyweight workouts at home. Their current macro targets are ${DB.goals.kcal} kcal, ${DB.goals.protein}g protein, ${DB.goals.carbs}g carbs, ${DB.goals.fat}g fat daily. Keep answers concise (under 150 words unless the question needs more), practical, and safe. Focus on form cues, exercise swaps, and simple nutrition advice.`;
+  const sys = `You are a knowledgeable gym and nutrition coach helping a user who is returning to the gym after 5-6 years. They do kettlebell + bodyweight workouts at home. Their current macro targets are ${DB.goals.kcal} kcal, ${DB.goals.protein}g protein, ${DB.goals.carbs}g carbs, ${DB.goals.fat}g fat, ${DB.goals.fiber}g fiber daily. Keep answers concise (under 150 words unless the question needs more), practical, and safe. Focus on form cues, exercise swaps, and simple nutrition advice.`;
 
   const messages = [
     ...DB.chat.slice(-10).map(x=>({role:x.role==='user'?'user':'assistant', content:x.content}))
