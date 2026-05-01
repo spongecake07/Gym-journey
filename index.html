@@ -684,10 +684,27 @@ function openEditDay(idx){
         return `<div class="item-card ${exists?'selected':''}"><div class="info"><h4>${esc(ex.name)}</h4><div class="detail">${ex.sets}×${ex.reps} · ${ex.rest}s</div></div>
           <button class="btn sm primary" data-pex="${i}" data-pcat="${cat}" ${exists?'disabled':''}>${exists?'Added':'Add'}</button></div>`;
       }).join('')||'<div class="food-empty">None here yet</div>';
-      document.querySelectorAll('[data-pex]:not([disabled])').forEach(b=>b.addEventListener('click',e=>{
-        e.stopPropagation();
+      document.querySelectorAll('[data-pex]').forEach(b=>b.addEventListener('click',e=>{
         const cat2=b.dataset.pcat;const arr=cat2==='Custom'?(DB.customExercises||[]):(LIBRARY[cat2]||[]);
-        day.exercises.push({...arr[+b.dataset.pex]});reRender();closeModal();openEditDay(idx);
+        const ex=arr[+b.dataset.pex];
+        if(day.exercises.some(item=>item.name===ex.name)){
+          toast('Already in this day','warn');
+          return;
+        }
+        e.stopPropagation();
+        day.exercises.push({...ex});
+        saveDB();
+        reRender();
+        toast(`Added to ${day.name}`);
+        const cards=document.querySelectorAll('[data-pex]');
+        cards.forEach(btn=>{
+          const cat3=btn.dataset.pcat;const list=cat3==='Custom'?(DB.customExercises||[]):(LIBRARY[cat3]||[]);
+          const exercise=list[+btn.dataset.pex];
+          const exists2=day.exercises.some(item=>item.name===exercise.name);
+          btn.disabled=exists2;
+          btn.textContent=exists2?'Added':'Add';
+          btn.closest('.item-card').classList.toggle('selected',exists2);
+        });
       }));
     };
     showCat(allCats[0]);
