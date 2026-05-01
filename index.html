@@ -696,15 +696,7 @@ function openEditDay(idx){
         saveDB();
         reRender();
         toast(`Added to ${day.name}`);
-        const cards=document.querySelectorAll('[data-pex]');
-        cards.forEach(btn=>{
-          const cat3=btn.dataset.pcat;const list=cat3==='Custom'?(DB.customExercises||[]):(LIBRARY[cat3]||[]);
-          const exercise=list[+btn.dataset.pex];
-          const exists2=day.exercises.some(item=>item.name===exercise.name);
-          btn.disabled=exists2;
-          btn.textContent=exists2?'Added':'Add';
-          btn.closest('.item-card').classList.toggle('selected',exists2);
-        });
+        showCat(cat2);
       }));
     };
     showCat(allCats[0]);
