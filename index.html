@@ -679,10 +679,12 @@ function openEditDay(idx){
     openModal(`<h2>Add Exercise</h2><div class="tab-switch" id="pc-tabs">${tabs}</div><div id="pc-body"></div>`);
     const showCat=cat=>{
       const exs=cat==='Custom'?(DB.customExercises||[]):(LIBRARY[cat]||[]);
-      document.getElementById('pc-body').innerHTML=exs.map((ex,i)=>`
-        <div class="item-card"><div class="info"><h4>${esc(ex.name)}</h4><div class="detail">${ex.sets}×${ex.reps} · ${ex.rest}s</div></div>
-        <button class="btn sm primary" data-pex="${i}" data-pcat="${cat}">Add</button></div>`).join('')||'<div class="food-empty">None here yet</div>';
-      document.querySelectorAll('[data-pex]').forEach(b=>b.addEventListener('click',e=>{
+      document.getElementById('pc-body').innerHTML=exs.map((ex,i)=>{
+        const exists=day.exercises.some(e=>e.name===ex.name);
+        return `<div class="item-card ${exists?'selected':''}"><div class="info"><h4>${esc(ex.name)}</h4><div class="detail">${ex.sets}×${ex.reps} · ${ex.rest}s</div></div>
+          <button class="btn sm primary" data-pex="${i}" data-pcat="${cat}" ${exists?'disabled':''}>${exists?'Added':'Add'}</button></div>`;
+      }).join('')||'<div class="food-empty">None here yet</div>';
+      document.querySelectorAll('[data-pex]:not([disabled])').forEach(b=>b.addEventListener('click',e=>{
         e.stopPropagation();
         const cat2=b.dataset.pcat;const arr=cat2==='Custom'?(DB.customExercises||[]):(LIBRARY[cat2]||[]);
         day.exercises.push({...arr[+b.dataset.pex]});reRender();closeModal();openEditDay(idx);
@@ -736,10 +738,9 @@ function addToDay(exIdx){
   const exs=libCat==='Custom'?(DB.customExercises||[]):(LIBRARY[libCat]||[]);
   const ex=exs[exIdx];
   openModal(`<h2>Add to Workout Day</h2><div class="faint" style="margin-bottom:12px">Adding: <strong>${esc(ex.name)}</strong></div>
-    ${DB.workoutDays.map((d,i)=>`<div class="item-card"><div class="info"><h4>${esc(d.name)}</h4><div class="detail">${d.exercises.length} exercises</div></div><button class="btn sm primary" data-pd="${i}">Add</button></div>`).join('')}`);
-  document.querySelectorAll('[data-pd]').forEach(b=>b.addEventListener('click',e=>{
+    ${DB.workoutDays.map((d,i)=>{const exists=d.exercises.some(e=>e.name===ex.name);return `<div class="item-card ${exists?'selected':''}"><div class="info"><h4>${esc(d.name)}</h4><div class="detail">${d.exercises.length} exercises</div></div><button class="btn sm primary" data-pd="${i}" ${exists?'disabled':''}>${exists?'Added':'Add'}</button></div>`}).join('')}`);
+  document.querySelectorAll('[data-pd]:not([disabled])').forEach(b=>b.addEventListener('click',e=>{
     e.stopPropagation();const day=DB.workoutDays[+b.dataset.pd];
-    if(day.exercises.some(e=>e.name===ex.name)){toast('Already in this day','warn');closeModal();return;}
     day.exercises.push({...ex});saveDB();toast(`Added to ${day.name}`);closeModal();
   }));
 }
