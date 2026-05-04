@@ -32,11 +32,11 @@ main{padding:8px 16px 24px}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
 nav.tabbar{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-elev);border-top:1px solid var(--border);padding:8px 4px;padding-bottom:calc(8px + env(safe-area-inset-bottom));z-index:20;}
-nav.tabbar button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 4px;color:var(--text-faint);font-size:10px;letter-spacing:.08em;text-transform:uppercase;transition:all .15s;}
+nav.tabbar button{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:0;padding:10px 6px;color:var(--text-faint);font-size:10px;letter-spacing:.08em;text-transform:uppercase;transition:all .15s;}
 nav.tabbar button.active{color:var(--accent)}
-nav.tabbar svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6}
+nav.tabbar svg{display:none !important;}
 @media(max-width:760px){nav.tabbar{grid-auto-rows:auto;grid-template-columns:repeat(7,minmax(0,1fr));}}
-@media(max-width:600px){nav.tabbar button{flex-direction:row;justify-content:center;gap:8px;padding:8px 6px;font-size:11px;}nav.tabbar button span{display:block;}nav.tabbar svg{display:none;}nav.tabbar button{border-radius:999px;background:rgba(212,163,92,.08);margin:2px 0;}}
+@media(max-width:600px){nav.tabbar button{padding:9px 8px;font-size:11px;}nav.tabbar button span{display:block;}nav.tabbar button{border-radius:999px;background:rgba(212,163,92,.08);margin:2px 0;}}
 .built-in-list{max-height:58vh;overflow-y:auto;padding-right:2px;}
 .built-ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 @media(max-width:720px){.built-ctrl-row{grid-template-columns:1fr;}}
@@ -114,13 +114,23 @@ label{display:block;font-size:12px;color:var(--text-dim);letter-spacing:.06em;te
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .timer-disp.ticking{animation:pulse 1s infinite}
 
-.mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:14px}
-.macro{padding:10px 6px;background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center}
-.macro .n{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500}
-.macro .l{font-size:9px;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-.macro .bar{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
+.mgrid{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.macro{padding:12px 14px;background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.macro .n{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;flex-shrink:0}
+.macro .l{font-size:12px;color:var(--text-dim);letter-spacing:.05em;text-transform:capitalize;flex:1}
+.macro .bar{flex:1;min-width:0;height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin:0 10px}
 .macro .bar>div{height:100%;background:var(--accent);transition:width .3s}
 .macro.over .bar>div{background:var(--danger)}.macro.warn .bar>div{background:var(--warn)}.macro.over .n{color:var(--danger)}
+.macro.kcal{border-color:#d9d98a44}
+.macro.protein{border-color:#7fb8d944;--macro-color:#8ab8d9}
+.macro.carbs{border-color:#98d99b44;--macro-color:#a8dfa8}
+.macro.fat{border-color:#d9b88a44;--macro-color:#e6c89b}
+.macro.fiber{border-color:#d98ba844;--macro-color:#d99bb8}
+.macro.protein .n,.macro.protein .l{color:#8ab8d9}
+.macro.carbs .n,.macro.carbs .l{color:#a8dfa8}
+.macro.fat .n,.macro.fat .l{color:#e6c89b}
+.macro.fiber .n,.macro.fiber .l{color:#d99bb8}
+.macro.kcal .n,.macro.kcal .l{color:#d9d98a}
 .meal-sec{margin-bottom:16px}
 .meal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;padding:10px 12px;background:rgba(212,163,92,.06);border-radius:var(--radius-sm);margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px;}
 .meal-head h3{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;flex:1}
@@ -368,22 +378,52 @@ const FOOD_DB = [
   {name:'Pork loin',cat:'Meat & Fish',unit:'100g',kcal:143,p:27,c:0,f:3.5,fiber:0},
   {name:'Cod',cat:'Meat & Fish',unit:'100g',kcal:82,p:18,c:0,f:0.7,fiber:0},
   {name:'Turkey sausage',cat:'Meat & Fish',unit:'100g',kcal:182,p:18,c:1.5,f:12,fiber:0},
-  {name:'Egg white',cat:'Dairy & Eggs',unit:'1 large',kcal:17,p:3.6,c:0.2,f:0,fiber:0},
+  {name:'Ground chicken',cat:'Meat & Fish',unit:'100g',kcal:143,p:21,c:0,f:6,fiber:0},
+  {name:'Shrimp',cat:'Meat & Fish',unit:'100g',kcal:99,p:24,c:0,f:0.3,fiber:0},
+  {name:'Tilapia',cat:'Meat & Fish',unit:'100g',kcal:96,p:20,c:0,f:1.7,fiber:0},
+  {name:'Lamb chop',cat:'Meat & Fish',unit:'100g',kcal:294,p:25,c:0,f:23,fiber:0},
+  {name:'Duck breast',cat:'Meat & Fish',unit:'100g',kcal:337,p:19,c:0,f:29,fiber:0},
+  {name:'Ground turkey',cat:'Meat & Fish',unit:'100g',kcal:115,p:19,c:0,f:4.5,fiber:0},
+  {name:'Canned salmon',cat:'Meat & Fish',unit:'100g',kcal:140,p:21,c:0,f:6,fiber:0},
+  {name:'Anchovies',cat:'Meat & Fish',unit:'100g',kcal:210,p:29,c:0,f:10,fiber:0},
+  {name:'Sardines',cat:'Meat & Fish',unit:'100g',kcal:208,p:25,c:0,f:11,fiber:0},
   {name:'Whole egg',cat:'Dairy & Eggs',unit:'1 egg',kcal:72,p:6.3,c:0.4,f:4.8,fiber:0},
+  {name:'Egg white',cat:'Dairy & Eggs',unit:'1 large',kcal:17,p:3.6,c:0.2,f:0,fiber:0},
   {name:'Greek yogurt',cat:'Dairy & Eggs',unit:'100g',kcal:59,p:10,c:3.6,f:0.4,fiber:0},
   {name:'Cottage cheese',cat:'Dairy & Eggs',unit:'100g',kcal:98,p:11,c:3.4,f:4.3,fiber:0},
   {name:'Milk (whole)',cat:'Dairy & Eggs',unit:'250ml',kcal:149,p:7.7,c:12,f:8,fiber:0},
+  {name:'Mozzarella cheese',cat:'Dairy & Eggs',unit:'30g',kcal:85,p:6.3,c:1.1,f:6.3,fiber:0},
+  {name:'Cheddar cheese',cat:'Dairy & Eggs',unit:'30g',kcal:120,p:7.4,c:0.4,f:9.8,fiber:0},
+  {name:'Parmesan cheese',cat:'Dairy & Eggs',unit:'30g',kcal:110,p:10,c:1,f:7.3,fiber:0},
+  {name:'Feta cheese',cat:'Dairy & Eggs',unit:'30g',kcal:75,p:4,c:1.2,f:6,fiber:0},
+  {name:'Low-fat yogurt',cat:'Dairy & Eggs',unit:'100g',kcal:56,p:3.5,c:7.8,f:0.2,fiber:0},
+  {name:'Skyr (Icelandic yogurt)',cat:'Dairy & Eggs',unit:'100g',kcal:59,p:10,c:3,f:0.2,fiber:0},
+  {name:'Milk (skim)',cat:'Dairy & Eggs',unit:'250ml',kcal:84,p:8.3,c:12,f:0.2,fiber:0},
   {name:'Oats',cat:'Grains & Bread',unit:'100g',kcal:389,p:17,c:66,f:7,fiber:10},
   {name:'Brown rice',cat:'Grains & Bread',unit:'100g',kcal:111,p:2.6,c:23,f:0.9,fiber:1.8},
   {name:'Quinoa',cat:'Grains & Bread',unit:'100g',kcal:120,p:4.4,c:21,f:1.9,fiber:2.8},
   {name:'Whole wheat bread',cat:'Grains & Bread',unit:'1 slice',kcal:70,p:4,c:12,f:1,fiber:2},
   {name:'Rice cakes',cat:'Grains & Bread',unit:'2 cakes',kcal:70,p:1.4,c:14,f:0.2,fiber:0.4},
+  {name:'White rice',cat:'Grains & Bread',unit:'100g',kcal:130,p:2.7,c:28,f:0.3,fiber:0.4},
+  {name:'Pasta (whole wheat)',cat:'Grains & Bread',unit:'100g',kcal:124,p:4.3,c:26,f:1.4,fiber:4},
+  {name:'Pasta (white)',cat:'Grains & Bread',unit:'100g',kcal:131,p:5,c:25,f:1.1,fiber:1.8},
+  {name:'Couscous',cat:'Grains & Bread',unit:'100g',kcal:112,p:3.8,c:23,f:0.3,fiber:1.5},
+  {name:'Rye bread',cat:'Grains & Bread',unit:'1 slice',kcal:83,p:2.7,c:15,f:1,fiber:1.9},
+  {name:'Bagel',cat:'Grains & Bread',unit:'1 bagel',kcal:210,p:8,c:41,f:1.5,fiber:2},
   {name:'Banana',cat:'Fruits',unit:'1 medium',kcal:105,p:1.3,c:27,f:0.3,fiber:3.1},
   {name:'Apple',cat:'Fruits',unit:'1 medium',kcal:95,p:0.5,c:25,f:0.3,fiber:4.4},
   {name:'Blueberries',cat:'Fruits',unit:'100g',kcal:57,p:0.7,c:14,f:0.3,fiber:2.4},
   {name:'Strawberries',cat:'Fruits',unit:'100g',kcal:32,p:0.7,c:7.7,f:0.3,fiber:2},
   {name:'Avocado',cat:'Fruits',unit:'100g',kcal:160,p:2,c:9,f:15,fiber:7},
   {name:'Orange',cat:'Fruits',unit:'1 medium',kcal:62,p:1.2,c:15.4,f:0.2,fiber:3.1},
+  {name:'Mango',cat:'Fruits',unit:'100g',kcal:60,p:0.8,c:15,f:0.4,fiber:1.6},
+  {name:'Pineapple',cat:'Fruits',unit:'100g',kcal:50,p:0.5,c:13,f:0.1,fiber:1.4},
+  {name:'Watermelon',cat:'Fruits',unit:'100g',kcal:30,p:0.6,c:7.6,f:0.2,fiber:0.4},
+  {name:'Kiwi',cat:'Fruits',unit:'1 fruit',kcal:61,p:1.1,c:15,f:0.5,fiber:3},
+  {name:'Peach',cat:'Fruits',unit:'1 medium',kcal:59,p:1.4,c:14,f:0.3,fiber:2.3},
+  {name:'Pear',cat:'Fruits',unit:'1 medium',kcal:101,p:0.6,c:27,f:0.2,fiber:5.5},
+  {name:'Grapes',cat:'Fruits',unit:'100g',kcal:67,p:0.6,c:17,f:0.2,fiber:0.9},
+  {name:'Grapefruit',cat:'Fruits',unit:'1/2 fruit',kcal:53,p:0.9,c:13,f:0.2,fiber:1.6},
   {name:'Broccoli',cat:'Vegetables',unit:'100g',kcal:34,p:2.8,c:7,f:0.4,fiber:2.6},
   {name:'Spinach',cat:'Vegetables',unit:'100g',kcal:23,p:2.9,c:3.6,f:0.4,fiber:2.2},
   {name:'Kale',cat:'Vegetables',unit:'100g',kcal:49,p:4.3,c:9,f:0.9,fiber:3.6},
@@ -393,6 +433,14 @@ const FOOD_DB = [
   {name:'Potato',cat:'Vegetables',unit:'100g',kcal:77,p:2,c:17,f:0.1,fiber:2.2},
   {name:'Zucchini',cat:'Vegetables',unit:'100g',kcal:17,p:1.2,c:3.1,f:0.3,fiber:1},
   {name:'Asparagus',cat:'Vegetables',unit:'100g',kcal:20,p:2.2,c:3.9,f:0.1,fiber:2.1},
+  {name:'Tomato',cat:'Vegetables',unit:'100g',kcal:18,p:0.9,c:3.9,f:0.2,fiber:1.2},
+  {name:'Cucumber',cat:'Vegetables',unit:'100g',kcal:16,p:0.7,c:3.6,f:0.1,fiber:0.5},
+  {name:'Celery',cat:'Vegetables',unit:'100g',kcal:16,p:0.7,c:3,f:0.2,fiber:1.6},
+  {name:'Mushrooms',cat:'Vegetables',unit:'100g',kcal:22,p:3.1,c:3.3,f:0.3,fiber:1},
+  {name:'Cabbage',cat:'Vegetables',unit:'100g',kcal:25,p:1.3,c:5.8,f:0.1,fiber:2.3},
+  {name:'Pumpkin',cat:'Vegetables',unit:'100g',kcal:26,p:1,c:6.5,f:0.1,fiber:0.5},
+  {name:'Green beans',cat:'Vegetables',unit:'100g',kcal:31,p:1.8,c:7,f:0.2,fiber:2.7},
+  {name:'Cauliflower',cat:'Vegetables',unit:'100g',kcal:25,p:1.9,c:5,f:0.3,fiber:2.4},
   {name:'Almonds',cat:'Legumes & Nuts',unit:'30g',kcal:174,p:6.4,c:6.1,f:15,fiber:3.5},
   {name:'Peanut butter',cat:'Legumes & Nuts',unit:'2 tbsp',kcal:188,p:8,c:6.8,f:16,fiber:2.6},
   {name:'Walnuts',cat:'Legumes & Nuts',unit:'30g',kcal:196,p:4.5,c:4,f:20,fiber:2},
@@ -401,18 +449,42 @@ const FOOD_DB = [
   {name:'Black beans',cat:'Legumes & Nuts',unit:'100g',kcal:132,p:8.9,c:23,f:0.5,fiber:8.7},
   {name:'Tofu',cat:'Legumes & Nuts',unit:'100g',kcal:76,p:8,c:1.9,f:4.8,fiber:0.3},
   {name:'Hummus',cat:'Legumes & Nuts',unit:'2 tbsp',kcal:70,p:2,c:4,f:5,fiber:1},
+  {name:'Cashews',cat:'Legumes & Nuts',unit:'30g',kcal:155,p:5,c:9,f:12,fiber:1},
+  {name:'Pistachios',cat:'Legumes & Nuts',unit:'30g',kcal:160,p:6,c:7,f:13,fiber:2.7},
+  {name:'Pecans',cat:'Legumes & Nuts',unit:'30g',kcal:196,p:2.6,c:3.9,f:20,fiber:2.7},
+  {name:'Macadamia nuts',cat:'Legumes & Nuts',unit:'30g',kcal:204,p:2.2,c:3.9,f:21,fiber:2.4},
+  {name:'Kidney beans',cat:'Legumes & Nuts',unit:'100g',kcal:127,p:8.7,c:23,f:0.4,fiber:6.4},
+  {name:'Pinto beans',cat:'Legumes & Nuts',unit:'100g',kcal:143,p:9,c:26,f:0.5,fiber:9},
+  {name:'Split peas',cat:'Legumes & Nuts',unit:'100g',kcal:118,p:8.2,c:21,f:0.4,fiber:4.2},
+  {name:'Edamame',cat:'Legumes & Nuts',unit:'100g',kcal:95,p:11,c:7,f:4,fiber:6},
+  {name:'Peanuts',cat:'Legumes & Nuts',unit:'30g',kcal:161,p:7,c:5.7,f:14,fiber:2.5},
   {name:'Dark chocolate',cat:'Snacks & Sweets',unit:'30g',kcal:170,p:2,c:13,f:12,fiber:3},
   {name:'Granola',cat:'Snacks & Sweets',unit:'50g',kcal:220,p:5,c:28,f:8,fiber:3},
   {name:'Rice pudding',cat:'Snacks & Sweets',unit:'100g',kcal:150,p:3,c:24,f:4,fiber:1},
   {name:'Protein bar',cat:'Snacks & Sweets',unit:'1 bar',kcal:210,p:20,c:22,f:7,fiber:4},
+  {name:'Popcorn (air-popped)',cat:'Snacks & Sweets',unit:'30g',kcal:96,p:3.5,c:19,f:1,fiber:3.8},
+  {name:'Trail mix',cat:'Snacks & Sweets',unit:'50g',kcal:240,p:7,c:23,f:13,fiber:3},
+  {name:'Yogurt bar',cat:'Snacks & Sweets',unit:'1 bar',kcal:80,p:2,c:15,f:1,fiber:0},
+  {name:'Peanut snack bar',cat:'Snacks & Sweets',unit:'1 bar',kcal:190,p:7,c:20,f:9,fiber:2},
+  {name:'Maple syrup',cat:'Snacks & Sweets',unit:'1 tbsp',kcal:52,p:0,c:13,f:0,fiber:0},
+  {name:'Honey',cat:'Snacks & Sweets',unit:'1 tbsp',kcal:64,p:0.1,c:17,f:0,fiber:0},
   {name:'Coffee',cat:'Drinks',unit:'1 cup',kcal:2,p:0.3,c:0,f:0,fiber:0},
   {name:'Green tea',cat:'Drinks',unit:'1 cup',kcal:0,p:0,c:0,f:0,fiber:0},
   {name:'Protein shake',cat:'Drinks',unit:'1 serving',kcal:120,p:24,c:3,f:1.5,fiber:1},
   {name:'Almond milk',cat:'Drinks',unit:'250ml',kcal:39,p:1.6,c:3.4,f:2.5,fiber:0.5},
+  {name:'Coconut water',cat:'Drinks',unit:'250ml',kcal:46,p:0.7,c:9,f:0.2,fiber:2.6},
+  {name:'Orange juice',cat:'Drinks',unit:'250ml',kcal:110,p:1.7,c:26,f:0.5,fiber:0.5},
+  {name:'Lemon juice',cat:'Drinks',unit:'100ml',kcal:29,p:1.1,c:9,f:0.3,fiber:0.3},
+  {name:'Sports drink',cat:'Drinks',unit:'250ml',kcal:60,p:0,c:14,f:0,fiber:0},
   {name:'Whey protein',cat:'Supplements',unit:'1 scoop',kcal:120,p:24,c:3,f:1.5,fiber:1},
   {name:'Creatine monohydrate',cat:'Supplements',unit:'5g',kcal:0,p:0,c:0,f:0,fiber:0},
+  {name:'BCAA powder',cat:'Supplements',unit:'5g',kcal:20,p:5,c:0,f:0,fiber:0},
+  {name:'Multivitamin',cat:'Supplements',unit:'1 tablet',kcal:5,p:0,c:1,f:0,fiber:0},
   {name:'Olive oil',cat:'Other',unit:'1 tbsp',kcal:119,p:0,c:0,f:13.5,fiber:0},
-  {name:'Coconut oil',cat:'Other',unit:'1 tbsp',kcal:121,p:0,c:0,f:13.5,fiber:0}
+  {name:'Coconut oil',cat:'Other',unit:'1 tbsp',kcal:121,p:0,c:0,f:13.5,fiber:0},
+  {name:'Butter',cat:'Other',unit:'1 tbsp',kcal:102,p:0.1,c:0,f:11.5,fiber:0},
+  {name:'Almond flour',cat:'Other',unit:'30g',kcal:160,p:6,c:6,f:14,fiber:3},
+  {name:'Balsamic vinegar',cat:'Other',unit:'1 tbsp',kcal:14,p:0,c:3,f:0,fiber:0}
 ];
 
 const LIBRARY = {
@@ -840,13 +912,13 @@ function renderNutrition(){
   const tot={kcal:0,p:0,c:0,f:0,fib:0};
   MEALS.forEach(m=>(day[m]||[]).forEach(i=>{tot.kcal+=i.kcal||0;tot.p+=i.p||0;tot.c+=i.c||0;tot.f+=i.f||0;tot.fib+=i.fiber||0;}));
   const G=DB.goals;
-  document.getElementById('mgrid').innerHTML=[{l:'kcal',v:Math.round(tot.kcal),g:G.kcal},{l:'protein',v:Math.round(tot.p),g:G.protein},{l:'carbs',v:Math.round(tot.c),g:G.carbs},{l:'fat',v:Math.round(tot.f),g:G.fat},{l:'fiber',v:Math.round(tot.fib),g:G.fiber}]
-    .map(m=>{const pct=m.g?(m.v/m.g)*100:0;const cls=pct>110?'over':pct>95?'warn':'';return `<div class="macro ${cls}"><div class="n">${m.v}<span style="font-size:9px;color:var(--text-faint)">/${m.g}</span></div><div class="l">${m.l}</div><div class="bar"><div style="width:${Math.min(100,pct)}%"></div></div></div>`;}).join('');
+  document.getElementById('mgrid').innerHTML=[{k:'kcal',n:'Calories',v:Math.round(tot.kcal),g:G.kcal,c:'kcal'},{k:'protein',n:'Protein',v:Math.round(tot.p),g:G.protein,c:'protein'},{k:'carbs',n:'Carbs',v:Math.round(tot.c),g:G.carbs,c:'carbs'},{k:'fat',n:'Fat',v:Math.round(tot.f),g:G.fat,c:'fat'},{k:'fiber',n:'Fiber',v:Math.round(tot.fib),g:G.fiber,c:'fiber'}]
+    .map(m=>{const pct=m.g?(m.v/m.g)*100:0;const cls=pct>110?'over':pct>95?'warn':'';const unit=m.k==='kcal'?' kcal':' g';return `<div class="macro ${cls} ${m.c}"><div class="l">${m.n}</div><div class="bar"><div style="width:${Math.min(100,pct)}%"></div></div><div class="n">${m.v}<span style="font-size:10px;opacity:0.7">/${m.g}${unit}</span></div></div>`;}).join('');
   let html='';
   MEALS.forEach(m=>{
     const items=day[m]||[];const mTot=items.reduce((a,i)=>a+(i.kcal||0),0);
     html+=`<div class="meal-sec"><div class="meal-head"><h3>${m}</h3><button class="btn primary lg" data-am="${m}">+ Add</button><span class="faint">${Math.round(mTot)} kcal</span></div>
-      ${items.length?items.map((it,i)=>`<div class="food-item" data-fm="${m}" data-fi="${i}"><div><div class="fname">${esc(it.name)}</div><div class="fsub">${esc(it.unit)}${it.qty!==1?' ×'+it.qty:''} · P${Math.round(it.p)} C${Math.round(it.c)} F${Math.round(it.f)} Fib${Math.round(it.fiber||0)}</div></div><div class="fkcal">${Math.round(it.kcal)}</div></div>`).join(''):'<div class="food-empty">Nothing logged</div>'}
+      ${items.length?items.map((it,i)=>`<div class="food-item" data-fm="${m}" data-fi="${i}"><div><div class="fname">${esc(it.name)}</div><div class="fsub">${esc(it.unit)}${it.qty!==1?' ×'+it.qty:''} · <span style="color:#8ab8d9">P${Math.round(it.p)}g</span> <span style="color:#a8dfa8">C${Math.round(it.c)}g</span> <span style="color:#e6c89b">F${Math.round(it.f)}g</span> <span style="color:#d99bb8">Fib${Math.round(it.fiber||0)}g</span></div></div><div class="fkcal" style="color:#d9d98a">${Math.round(it.kcal)}</div></div>`).join(''):'<div class="food-empty">Nothing logged</div>'}
     </div>`;
   });
   document.getElementById('nutri-summary').innerHTML=`<div class="card"><div class="row"><span class="muted">Calories</span><span>${Math.round(tot.kcal)} / ${G.kcal} kcal</span></div><div class="divider"></div><div class="row"><span class="muted">Remaining</span><span>${tot.kcal<=G.kcal?Math.round(G.kcal-tot.kcal)+' kcal left':'-'+Math.round(tot.kcal-G.kcal)+' over'}</span></div></div>`;
@@ -881,7 +953,7 @@ function openAddFood(meal){
   let selectedBuiltInCat='All';
   const bfp=document.getElementById('bfp');
   const catSelect=document.getElementById('builtin-cat-select');
-  const renderFoodCard=(f,i)=>{const color=FOOD_COLORS[f.cat]||'#999';return `<div class="built-card" data-bf="${i}" style="border-color:${color}22"><div class="built-info"><div class="built-name">${esc(f.name)}</div><div class="built-meta">${esc(f.unit)} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f}${f.fiber?` · Fib${f.fiber}`:''}</div><div class="cat-badge" style="border-color:${color};background:${color}22;color:${color}">${esc(f.cat)}</div></div><button class="btn sm primary" data-bf-btn="${i}">Add</button></div>`;};
+  const renderFoodCard=(f,i)=>{const color=FOOD_COLORS[f.cat]||'#999';return `<div class="built-card" data-bf="${i}" style="border-color:${color}22"><div class="built-info" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px"><div style="display:flex;flex-direction:column;gap:4px"><div class="built-name">${esc(f.name)}</div><div class="built-meta">${esc(f.unit)}</div><div class="cat-badge" style="border-color:${color};background:${color}22;color:${color};width:fit-content">${esc(f.cat)}</div></div><div style="display:flex;gap:12px;align-items:flex-end"><div style="display:flex;flex-direction:column;gap:4px;font-size:12px;text-align:right"><div style="color:#d9d98a"><strong>${f.kcal}</strong> Calories</div><div style="color:#8ab8d9"><strong>Protein</strong> ${f.p}g</div><div style="color:#a8dfa8"><strong>Carbs</strong> ${f.c}g</div><div style="color:#e6c89b"><strong>Fat</strong> ${f.f}g</div>${f.fiber?`<div style="color:#d99bb8"><strong>Fiber</strong> ${f.fiber}g</div>`:''}</div><button class="btn sm primary" data-bf-btn="${i}">Add</button></div></div></div>`;};
   const renderBuiltIn=()=>{
     const q=document.getElementById('builtin-search').value.trim().toLowerCase();
     const filtered=FOOD_DB.map((f,i)=>({f,i})).filter(({f})=>f.name.toLowerCase().includes(q) && (selectedBuiltInCat==='All' || f.cat===selectedBuiltInCat));
@@ -894,7 +966,7 @@ function openAddFood(meal){
   renderBuiltIn();
   const mfp=document.getElementById('mfp');
   if(!DB.myFoods.length){mfp.innerHTML='<div class="food-empty">No foods saved. Add them in My Foods tab.</div>';}
-  else{mfp.innerHTML=DB.myFoods.map((f,i)=>`<div class="item-card"><div class="info"><h4>${esc(f.name)}</h4><div class="detail">${esc(f.unit)} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f} Fib${f.fiber||0}</div></div><button class="btn sm primary" data-pf="${i}">Add</button></div>`).join('');
+  else{mfp.innerHTML=DB.myFoods.map((f,i)=>`<div class="item-card"><div class="info"><h4>${esc(f.name)}</h4><div class="detail">${esc(f.unit)} \u00b7 <span style="color:#d9d98a">${f.kcal} kcal</span> \u00b7 <span style="color:#8ab8d9">P${f.p}g</span> <span style="color:#a8dfa8">C${f.c}g</span> <span style="color:#e6c89b">F${f.f}g</span> <span style="color:#d99bb8\">Fib${f.fiber||0}g</span></div></div><button class="btn sm primary" data-pf="${i}">Add</button></div>`).join('');
   mfp.querySelectorAll('[data-pf]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();pickFoodQty(DB.myFoods[+b.dataset.pf],meal);}));}
   document.getElementById('cf-ok').addEventListener('click',()=>{
     const name=document.getElementById('cf-n').value.trim();
@@ -905,7 +977,7 @@ function openAddFood(meal){
   });
   const rcp=document.getElementById('rcp');
   if(!DB.recipes.length){rcp.innerHTML='<div class="food-empty">No recipes saved yet.</div>';}
-  else{rcp.innerHTML=DB.recipes.map((r,i)=>`<div class="item-card"><div class="info"><h4>${esc(r.name)}</h4><div class="detail">per serving: ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)}</div></div><button class="btn sm primary" data-pr="${i}">Add</button></div>`).join('');
+  else{rcp.innerHTML=DB.recipes.map((r,i)=>`<div class="item-card"><div class="info"><h4>${esc(r.name)}</h4><div class="detail">per serving: <span style="color:#d9d98a">${Math.round(r.kcal)} kcal</span> \u00b7 <span style="color:#8ab8d9">P${Math.round(r.p)}g</span> <span style="color:#a8dfa8">C${Math.round(r.c)}g</span> <span style="color:#e6c89b">F${Math.round(r.f)}g</span> <span style="color:#d99bb8\">Fib${Math.round(r.fiber||0)}g</span></div></div><button class="btn sm primary" data-pr="${i}">Add</button></div>`).join('');
   rcp.querySelectorAll('[data-pr]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();pickRecipeQty(DB.recipes[+b.dataset.pr],meal);}));}
 }
 
@@ -990,7 +1062,7 @@ function renderMyFoods(){
   if(!Object.keys(groups).length){t.innerHTML=`<div class="empty"><div class="big">🥗</div><div>${filter?'No foods match your search.':'No foods saved yet.'}</div><div class="faint" style="margin-top:6px">Tap + New Food to start your library.</div></div>`;return;}
   t.innerHTML=order.map(cat=>`<div class="cat-group">
     <div class="cat-header" data-cg="${cat}"><span>${cat} <span class="faint">(${groups[cat].length})</span></span><span class="cat-arrow">›</span></div>
-    <div class="cat-body" data-cb="${cat}">${groups[cat].map(({f,i})=>`<div class="item-card" style="margin-top:6px"><div class="info"><h4>${esc(f.name)}</h4><div class="detail">${esc(f.unit)} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f} Fib${f.fiber||0}</div></div><button class="btn sm ghost" data-emf="${i}">Edit</button></div>`).join('')}
+    <div class="cat-body" data-cb="${cat}">${groups[cat].map(({f,i})=>`<div class="item-card" style="margin-top:6px"><div class="info"><h4>${esc(f.name)}</h4><div class="detail">${esc(f.unit)} · <span style="color:#d9d98a">${f.kcal} kcal</span> · <span style="color:#8ab8d9">P${f.p}g</span> <span style="color:#a8dfa8">C${f.c}g</span> <span style="color:#e6c89b">F${f.f}g</span> <span style="color:#d99bb8">Fib${f.fiber||0}g</span></div></div><button class="btn sm ghost" data-emf="${i}">Edit</button></div>`).join('')}
     </div></div>`).join('');
   document.querySelectorAll('[data-cg]').forEach(h=>h.addEventListener('click',()=>{h.classList.toggle('open');document.querySelector(`[data-cb="${h.dataset.cg}"]`).classList.toggle('open');}));
   const first=document.querySelector('.cat-header');if(first){first.classList.add('open');document.querySelector('.cat-body').classList.add('open');}
@@ -1033,7 +1105,7 @@ function renderRecipes(){
   if(searchInput){searchInput.value=recSearch;searchInput.oninput=e=>{recSearch=e.target.value.trim().toLowerCase();renderRecipes();}};
   const list=DB.recipes.map((r,i)=>({r,i})).filter(({r})=>{if(!recSearch)return true;const text=(r.name+' '+r.ingredients+' '+r.instructions).toLowerCase();return text.includes(recSearch);});
   if(!list.length){t.innerHTML=`<div class="empty"><div class="big">📖</div><div>${recSearch?'No recipes match your search.':'No recipes saved yet.'}</div></div>`;return;}
-  t.innerHTML=list.map(({r,i})=>`<div class="recipe-card" data-ri="${i}"><h3>${esc(r.name)}</h3><div class="rm">${r.servings} servings · ${Math.round(r.kcal)} kcal · P${Math.round(r.p)} C${Math.round(r.c)} F${Math.round(r.f)} Fib${Math.round(r.fiber||0)}</div></div>`).join('');
+  t.innerHTML=list.map(({r,i})=>`<div class="recipe-card" data-ri="${i}"><h3>${esc(r.name)}</h3><div class="rm"><span style="color:#d9d98a">${Math.round(r.kcal)} kcal</span> · <span style="color:#8ab8d9">P${Math.round(r.p)}g</span> <span style="color:#a8dfa8">C${Math.round(r.c)}g</span> <span style="color:#e6c89b">F${Math.round(r.f)}g</span> <span style="color:#d99bb8">Fib${Math.round(r.fiber||0)}g</span> · ${r.servings} servings</div></div>`).join('');
   document.querySelectorAll('.recipe-card').forEach((el)=>el.addEventListener('click',()=>openRecipe(+el.dataset.ri)));
 }
 
