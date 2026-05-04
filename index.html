@@ -31,11 +31,22 @@ main{padding:8px 16px 24px}
 .view.active{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-nav.tabbar{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-elev);border-top:1px solid var(--border);padding:6px 2px;padding-bottom:calc(6px + env(safe-area-inset-bottom));z-index:20;}
-nav.tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;color:var(--text-faint);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;transition:color .15s;}
+nav.tabbar{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg-elev);border-top:1px solid var(--border);padding:8px 4px;padding-bottom:calc(8px + env(safe-area-inset-bottom));z-index:20;}
+nav.tabbar button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 4px;color:var(--text-faint);font-size:10px;letter-spacing:.08em;text-transform:uppercase;transition:all .15s;}
 nav.tabbar button.active{color:var(--accent)}
-nav.tabbar svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6}
-@media(max-width:600px){nav.tabbar button span{display:block;font-size:8px}nav.tabbar button{padding:4px 2px;gap:1px}nav.tabbar svg{width:20px;height:20px}}
+nav.tabbar svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6}
+@media(max-width:760px){nav.tabbar{grid-auto-rows:auto;grid-template-columns:repeat(7,minmax(0,1fr));}}
+@media(max-width:600px){nav.tabbar button{flex-direction:row;justify-content:center;gap:8px;padding:8px 6px;font-size:11px;}nav.tabbar button span{display:block;}nav.tabbar svg{display:none;}nav.tabbar button{border-radius:999px;background:rgba(212,163,92,.08);margin:2px 0;}}
+.built-in-list{max-height:58vh;overflow-y:auto;padding-right:2px;}
+.built-ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+@media(max-width:720px){.built-ctrl-row{grid-template-columns:1fr;}}
+.built-card{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;cursor:default;transition:transform .15s,border-color .15s,box-shadow .15s;}
+.built-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.08);}
+.built-card .built-info{flex:1;min-width:0}
+.built-card .built-name{font-size:14px;font-weight:600;letter-spacing:.01em;margin-bottom:4px;color:var(--text);}
+.built-card .built-meta{font-size:12px;color:var(--text-faint);line-height:1.4;font-family:'JetBrains Mono',monospace;margin-bottom:8px;}
+.built-card .cat-badge{display:inline-flex;align-items:center;font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid;letter-spacing:.02em;}
+.built-card button{white-space:nowrap;flex-shrink:0;}
 
 .card{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -335,15 +346,27 @@ label{display:block;font-size:12px;color:var(--text-dim);letter-spacing:.06em;te
 /* ── LIBRARY DATA ────────────────────────────────────────────── */
 const LIB_CATS = ['Kettlebell','Bodyweight','Chest','Back','Shoulders','Arms','Legs','Core','Cardio'];
 const FOOD_CATS = ['Meat & Fish','Dairy & Eggs','Grains & Bread','Fruits','Vegetables','Legumes & Nuts','Snacks & Sweets','Drinks','Supplements','Other'];
+const FOOD_COLORS = {
+  'Meat & Fish':'#d47f5b',
+  'Dairy & Eggs':'#d4c56d',
+  'Grains & Bread':'#7bb48d',
+  'Fruits':'#d4678f',
+  'Vegetables':'#68b5a6',
+  'Legumes & Nuts':'#8f7ac6',
+  'Snacks & Sweets':'#d48c5d',
+  'Drinks':'#5c9cd4',
+  'Supplements':'#a34fc9',
+  'Other':'#8a8a8a'
+};
 const MEALS = ['Breakfast','Lunch','Dinner','Snacks'];
 const FOOD_DB = [
   {name:'Chicken breast',cat:'Meat & Fish',unit:'100g',kcal:165,p:31,c:0,f:3.6,fiber:0},
   {name:'Turkey breast',cat:'Meat & Fish',unit:'100g',kcal:135,p:29,c:0,f:1.5,fiber:0},
   {name:'Salmon',cat:'Meat & Fish',unit:'100g',kcal:208,p:20,c:0,f:13,fiber:0},
   {name:'Tuna (canned)',cat:'Meat & Fish',unit:'100g',kcal:132,p:28,c:0,f:1.3,fiber:0},
-  {name:'Shrimp',cat:'Meat & Fish',unit:'100g',kcal:99,p:24,c:0.2,f:0.3,fiber:0},
-  {name:'Sardines',cat:'Meat & Fish',unit:'100g',kcal:208,p:25,c:0,f:11,fiber:0},
-  {name:'Ground beef',cat:'Meat & Fish',unit:'100g',kcal:250,p:26,c:0,f:15,fiber:0},
+  {name:'Lean beef',cat:'Meat & Fish',unit:'100g',kcal:176,p:26,c:0,f:7.7,fiber:0},
+  {name:'Pork loin',cat:'Meat & Fish',unit:'100g',kcal:143,p:27,c:0,f:3.5,fiber:0},
+  {name:'Cod',cat:'Meat & Fish',unit:'100g',kcal:82,p:18,c:0,f:0.7,fiber:0},
   {name:'Turkey sausage',cat:'Meat & Fish',unit:'100g',kcal:182,p:18,c:1.5,f:12,fiber:0},
   {name:'Egg white',cat:'Dairy & Eggs',unit:'1 large',kcal:17,p:3.6,c:0.2,f:0,fiber:0},
   {name:'Whole egg',cat:'Dairy & Eggs',unit:'1 egg',kcal:72,p:6.3,c:0.4,f:4.8,fiber:0},
@@ -354,11 +377,13 @@ const FOOD_DB = [
   {name:'Brown rice',cat:'Grains & Bread',unit:'100g',kcal:111,p:2.6,c:23,f:0.9,fiber:1.8},
   {name:'Quinoa',cat:'Grains & Bread',unit:'100g',kcal:120,p:4.4,c:21,f:1.9,fiber:2.8},
   {name:'Whole wheat bread',cat:'Grains & Bread',unit:'1 slice',kcal:70,p:4,c:12,f:1,fiber:2},
+  {name:'Rice cakes',cat:'Grains & Bread',unit:'2 cakes',kcal:70,p:1.4,c:14,f:0.2,fiber:0.4},
   {name:'Banana',cat:'Fruits',unit:'1 medium',kcal:105,p:1.3,c:27,f:0.3,fiber:3.1},
   {name:'Apple',cat:'Fruits',unit:'1 medium',kcal:95,p:0.5,c:25,f:0.3,fiber:4.4},
   {name:'Blueberries',cat:'Fruits',unit:'100g',kcal:57,p:0.7,c:14,f:0.3,fiber:2.4},
   {name:'Strawberries',cat:'Fruits',unit:'100g',kcal:32,p:0.7,c:7.7,f:0.3,fiber:2},
   {name:'Avocado',cat:'Fruits',unit:'100g',kcal:160,p:2,c:9,f:15,fiber:7},
+  {name:'Orange',cat:'Fruits',unit:'1 medium',kcal:62,p:1.2,c:15.4,f:0.2,fiber:3.1},
   {name:'Broccoli',cat:'Vegetables',unit:'100g',kcal:34,p:2.8,c:7,f:0.4,fiber:2.6},
   {name:'Spinach',cat:'Vegetables',unit:'100g',kcal:23,p:2.9,c:3.6,f:0.4,fiber:2.2},
   {name:'Kale',cat:'Vegetables',unit:'100g',kcal:49,p:4.3,c:9,f:0.9,fiber:3.6},
@@ -366,6 +391,8 @@ const FOOD_DB = [
   {name:'Carrot',cat:'Vegetables',unit:'100g',kcal:41,p:0.9,c:10,f:0.2,fiber:2.8},
   {name:'Sweet potato',cat:'Vegetables',unit:'100g',kcal:86,p:1.6,c:20,f:0.1,fiber:3},
   {name:'Potato',cat:'Vegetables',unit:'100g',kcal:77,p:2,c:17,f:0.1,fiber:2.2},
+  {name:'Zucchini',cat:'Vegetables',unit:'100g',kcal:17,p:1.2,c:3.1,f:0.3,fiber:1},
+  {name:'Asparagus',cat:'Vegetables',unit:'100g',kcal:20,p:2.2,c:3.9,f:0.1,fiber:2.1},
   {name:'Almonds',cat:'Legumes & Nuts',unit:'30g',kcal:174,p:6.4,c:6.1,f:15,fiber:3.5},
   {name:'Peanut butter',cat:'Legumes & Nuts',unit:'2 tbsp',kcal:188,p:8,c:6.8,f:16,fiber:2.6},
   {name:'Walnuts',cat:'Legumes & Nuts',unit:'30g',kcal:196,p:4.5,c:4,f:20,fiber:2},
@@ -375,7 +402,17 @@ const FOOD_DB = [
   {name:'Tofu',cat:'Legumes & Nuts',unit:'100g',kcal:76,p:8,c:1.9,f:4.8,fiber:0.3},
   {name:'Hummus',cat:'Legumes & Nuts',unit:'2 tbsp',kcal:70,p:2,c:4,f:5,fiber:1},
   {name:'Dark chocolate',cat:'Snacks & Sweets',unit:'30g',kcal:170,p:2,c:13,f:12,fiber:3},
-  {name:'Olive oil',cat:'Other',unit:'1 tbsp',kcal:119,p:0,c:0,f:13.5,fiber:0}
+  {name:'Granola',cat:'Snacks & Sweets',unit:'50g',kcal:220,p:5,c:28,f:8,fiber:3},
+  {name:'Rice pudding',cat:'Snacks & Sweets',unit:'100g',kcal:150,p:3,c:24,f:4,fiber:1},
+  {name:'Protein bar',cat:'Snacks & Sweets',unit:'1 bar',kcal:210,p:20,c:22,f:7,fiber:4},
+  {name:'Coffee',cat:'Drinks',unit:'1 cup',kcal:2,p:0.3,c:0,f:0,fiber:0},
+  {name:'Green tea',cat:'Drinks',unit:'1 cup',kcal:0,p:0,c:0,f:0,fiber:0},
+  {name:'Protein shake',cat:'Drinks',unit:'1 serving',kcal:120,p:24,c:3,f:1.5,fiber:1},
+  {name:'Almond milk',cat:'Drinks',unit:'250ml',kcal:39,p:1.6,c:3.4,f:2.5,fiber:0.5},
+  {name:'Whey protein',cat:'Supplements',unit:'1 scoop',kcal:120,p:24,c:3,f:1.5,fiber:1},
+  {name:'Creatine monohydrate',cat:'Supplements',unit:'5g',kcal:0,p:0,c:0,f:0,fiber:0},
+  {name:'Olive oil',cat:'Other',unit:'1 tbsp',kcal:119,p:0,c:0,f:13.5,fiber:0},
+  {name:'Coconut oil',cat:'Other',unit:'1 tbsp',kcal:121,p:0,c:0,f:13.5,fiber:0}
 ];
 
 const LIBRARY = {
@@ -824,7 +861,13 @@ document.getElementById('dt-next').addEventListener('click',()=>{curDate=shiftD(
 function openAddFood(meal){
   openModal(`<h2>Add to ${meal}</h2>
     <div class="tab-switch"><button data-ft="built" class="active">Built-in</button><button data-ft="mf">My Foods</button><button data-ft="custom">Custom</button><button data-ft="recipe">Recipe</button></div>
-    <div id="ft-built"><div class="form-row"><label>Category</label><select id="builtin-cat-select">${['All',...FOOD_CATS].map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select></div><div class="form-row"><input type="text" id="builtin-search" placeholder="Search built-in foods..."/></div><div id="bfp"></div></div>
+    <div id="ft-built">
+      <div class="built-ctrl-row">
+        <div class="form-row"><label>Category</label><select id="builtin-cat-select">${['All',...FOOD_CATS].map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select></div>
+        <div class="form-row"><label>Search</label><input type="text" id="builtin-search" placeholder="Search built-in foods..."/></div>
+      </div>
+      <div id="bfp" class="built-in-list"></div>
+    </div>
     <div id="ft-mf" style="display:none"><div id="mfp"></div></div>
     <div id="ft-custom" style="display:none">
       <div class="form-row"><label>Name</label><input type="text" id="cf-n" required/></div>
@@ -838,17 +881,12 @@ function openAddFood(meal){
   let selectedBuiltInCat='All';
   const bfp=document.getElementById('bfp');
   const catSelect=document.getElementById('builtin-cat-select');
-  const renderFoodCard=(f,i)=>`<div class="item-card"><div class="info"><h4>${esc(f.name)}</h4><div class="detail">${esc(f.unit)} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f} Fib${f.fiber||0}</div></div><button class="btn sm primary" data-bf="${i}">Add</button></div>`;
+  const renderFoodCard=(f,i)=>{const color=FOOD_COLORS[f.cat]||'#999';return `<div class="built-card" data-bf="${i}" style="border-color:${color}22"><div class="built-info"><div class="built-name">${esc(f.name)}</div><div class="built-meta">${esc(f.unit)} · ${f.kcal} kcal · P${f.p} C${f.c} F${f.f}${f.fiber?` · Fib${f.fiber}`:''}</div><div class="cat-badge" style="border-color:${color};background:${color}22;color:${color}">${esc(f.cat)}</div></div><button class="btn sm primary" data-bf-btn="${i}">Add</button></div>`;};
   const renderBuiltIn=()=>{
     const q=document.getElementById('builtin-search').value.trim().toLowerCase();
     const filtered=FOOD_DB.map((f,i)=>({f,i})).filter(({f})=>f.name.toLowerCase().includes(q) && (selectedBuiltInCat==='All' || f.cat===selectedBuiltInCat));
-    const grouped=filtered.reduce((acc,{f,i})=>{(acc[f.cat||'Other']=acc[f.cat||'Other']||[]).push({f,i});return acc;}, {});
-    const html=selectedBuiltInCat==='All'
-      ? Object.keys(grouped).sort().map(cat=>`<div class="cat-group"><div class="cat-header open"><span>${esc(cat)}</span><span class="cat-arrow">›</span></div><div class="cat-body open">${grouped[cat].map(item=>renderFoodCard(item.f,item.i)).join('')}</div></div>`).join('')
-      : filtered.map(item=>renderFoodCard(item.f,item.i)).join('');
-    bfp.innerHTML=filtered.length?html:'<div class="food-empty">No foods found.</div>';
-    bfp.querySelectorAll('[data-bf]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();pickFoodQty(FOOD_DB[+b.dataset.bf],meal);}));
-    bfp.querySelectorAll('.cat-header').forEach(h=>h.addEventListener('click',()=>{h.classList.toggle('open');h.nextElementSibling.classList.toggle('open');}));
+    bfp.innerHTML=filtered.length?filtered.map(item=>renderFoodCard(item.f,item.i)).join(''):'<div class="food-empty">No foods found.</div>';
+    bfp.querySelectorAll('[data-bf-btn]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();pickFoodQty(FOOD_DB[+b.dataset.bfBtn],meal);}));
   };
   const builtinSearch=document.getElementById('builtin-search');
   builtinSearch.addEventListener('input',renderBuiltIn);
